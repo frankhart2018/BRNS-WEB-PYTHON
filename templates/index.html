@@ -35,6 +35,8 @@
           <p><button id="zeff" type="button">Zeff</button>&nbsp;(Click to activate/deactivate)</p>
           <p><button type="button" id="zoomin">Zoom in</button></p>
           <p><button type="button" id="zoomout">Zoom out</button></p>
+          <p><button type="button" id="rgb">RGB</button></p>
+          <p><button type="button" id="gray">Grayscale</button></p>
         </form>
       </div>
     {% endif %}
@@ -141,6 +143,30 @@
           type: "post",
           dataType: "json",
           data: {filename: filename},
+          success: function(result) {
+            $("#img").attr('src', result.img);
+          }
+        });
+      });
+
+      $("#rgb").click(function() {
+        $.ajax({
+          url: "/rgb",
+          type: "post",
+          dataType: "json",
+          data: {},
+          success: function(result) {
+            $("#img").attr('src', result.img);
+          }
+        });
+      });
+
+      $("#gray").click(function() {
+        $.ajax({
+          url: "/gray",
+          type: "post",
+          dataType: "json",
+          data: {},
           success: function(result) {
             $("#img").attr('src', result.img);
           }

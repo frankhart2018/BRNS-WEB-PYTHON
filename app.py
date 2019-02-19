@@ -17,6 +17,8 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.secret_key = 'my-secret-key'
 app.config['SESSION_TYPE'] = 'filesystem'
 
+filename_global = ""
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
 
@@ -25,13 +27,13 @@ def index():
         if "inputFile" in request.files:
             file = request.files['inputFile']
             filename = "static/original/" + secure_filename(file.filename)
+            global filename_global
+            filename_global = filename
             file.save(filename)
             img = colorize(filename)
             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             im_filename = "static/colorized/" + file.filename.split(".")[0] + ".jpg"
             cv2.imwrite(im_filename, img)
-            # plt.imshow(img)
-            # plt.show()
             return render_template('index.html', upload=False, img=im_filename)
         else:
             flash("No image selected")
@@ -113,3 +115,30 @@ def rgbtohsi():
         cv2.imwrite(savePath, img_hsi)
 
         return jsonify({"img": savePath})
+
+@app.route('/rgb', methods=['GET', 'POST'])
+def rgb():
+
+    if request.method == "POST":
+        global filename_global
+        filename = filename_global
+        img = colorize(filename)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        filename = os.path.basename(filename)
+        im_filename = "static/colorized/" + filename.split(".")[0] + ".jpg"
+        cv2.imwrite(im_filename, img)
+        return jsonify({"img": im_filename})
+
+@app.route('/gray', methods=['GET', 'POST'])
+def gray():
+
+    if request.method == "POST":
+        global filename_global
+        filename = filename_global
+        img = colorize(filename)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        filename = os.path.basename(filename)
+        img_gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+        im_filename = "static/grayscale/" + filename.split(".")[0] + ".jpg"
+        cv2.imwrite(im_filename, img_gray)
+        return jsonify({"img": im_filename})
