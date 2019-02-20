@@ -10,47 +10,8 @@
     crossorigin="anonymous"></script>
 
     <link rel="stylesheet" type="text/css" href="static/resize/css/imgareaselect-default.css" />
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script type="text/javascript" src="static/resize/scripts/jquery.min.js"></script>
     <script type="text/javascript" src="static/resize/scripts/jquery.imgareaselect.pack.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
-    <script>
-      $( function() {
-        $( "#slider" ).slider();
-      } );
-
-      $( function() {
-        $( "#slider1" ).slider();
-      } );
-
-      $( function() {
-        $( "#slider2" ).slider();
-      } );
-    </script>
-
-    <style type="text/css">
-
-        .icon-button {
-          border-radius: 10px;
-        }
-
-        .icon-button:focus {
-          outline: 0;
-        }
-
-        .icon-image {
-          width: 50px;
-          height: 50px;
-        }
-
-        .slide {
-          margin-top: -50px;
-          margin-left: 80px;
-          margin-right: 80px;
-        }
-
-    </style>
 
   </head>
   <body>
@@ -76,48 +37,11 @@
           <p><button type="button" id="zoomout">Zoom out</button></p>
           <p><button type="button" id="rgb">RGB</button></p>
           <p><button type="button" id="gray">Grayscale</button></p> -->
-          <div>
-            <p style="text-align: center;">
-              <button type="button" id="inv" class='icon-button'><img class='icon-image' src="static/ecil_icons/INV.png"></button>
-              <button type="button" id="obj" class='icon-button'><img class='icon-image' src="static/ecil_icons/obj_vs_bg.png"></button>
-              <button type="button" id="cc" class='icon-button'><img class='icon-image' src="static/ecil_icons/CC.png"></button>
-            </p>
-            <p>
-              <button type="button" id="vcminus" class='icon-button'><img class='icon-image' src="static/ecil_icons/VC_minus.png"></button>
-              <button type="button" id="im" class='icon-button'><img class='icon-image' src="static/ecil_icons/IM.png"></button>
-              <button type="button" id="om" class='icon-button'><img class='icon-image' src="static/ecil_icons/OM.png"></button>
-              <button type="button" id="vcplus" class='icon-button'><img class='icon-image' src="static/ecil_icons/VC_plus.png"></button>
-            </p>
-            <p>
-              <button type="button" id="veminus" class='icon-button'><img class='icon-image' src="static/ecil_icons/VE_minus.png"></button>
-              <div id="slider" class='slide'></div>
-              <button type="button" id="veplus" class='icon-button' style='margin-top: -120px; margin-left: 220px;'><img class='icon-image' src="static/ecil_icons/VE_plus.png"></button>
-            </p>
-            <p>
-              <button type="button" id="vdminus" class='icon-button'><img class='icon-image' src="static/ecil_icons/VD_minus.png"></button>
-              <div id="slider1" class='slide'></div>
-              <button type="button" id="vdplus" class='icon-button' style='margin-top: -120px; margin-left: 220px;'><img class='icon-image' src="static/ecil_icons/VD_plus.png"></button>
-            </p>
-            <p style="text-align: center;">
-              <button type="button" id="pseudo" class='icon-button'><img class='icon-image' src="static/ecil_icons/Pseudo.png"></button>
-              <button type="button" id="gray" class='icon-button'><img class='icon-image' src="static/ecil_icons/BW.png"></button>
-              <button type="button" id="hsi" class='icon-button'><img class='icon-image' src="static/ecil_icons/HSI.png"></button>
-            </p>
-            <p>
-              <button type="button" id="gammaminus" class='icon-button'><img class='icon-image' src="static/ecil_icons/gamma_minus.png"></button>
-              <div id="slider2" class='slide'></div>
-              <button type="button" id="gammaplus" class='icon-button' style='margin-top: -120px; margin-left: 220px;'><img class='icon-image' src="static/ecil_icons/gamma_plus.png"></button>
-            </p>
-            <p style="text-align: right;">
-              <input type="number" id="gammaVal">
-              <button type="button" id="gamma" class='icon-button'><img class='icon-image' src="static/ecil_icons/gamma.png"></button>
-            </p>
-            <p style="text-align: center;">
-              <button type="button" id="contrast" class='icon-button'><img class='icon-image' src="static/ecil_icons/cstretch.png"></button>
-              <button type="button" id="zeff" class='icon-button'><img class='icon-image' src="static/ecil_icons/zeff.png"></button>
-              <button type="button" id="zoom" class='icon-button'><img class='icon-image' src="static/ecil_icons/Zoom.png"></button>
-            </p>
-          </div>
+          <p>
+            <input type="button" id="inv">
+            <input type="button" id="obj">
+            <input type="button" id="cc">
+          </p>
         </form>
       </div>
     {% endif %}
@@ -230,7 +154,7 @@
         });
       });
 
-      $("#pseudo").click(function() {
+      $("#rgb").click(function() {
         $.ajax({
           url: "/rgb",
           type: "post",
