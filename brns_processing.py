@@ -8,12 +8,22 @@ import cv2
 
 
 def loadimgfile(fpath):
-    extension=fpath.split('.')[1]
+    extension=fpath.split('.')[-1]
     if extension=='txt':
         return np.loadtxt(fpath)
     elif extension=='npy':
         return np.load(fpath)
-
+def saveimgfile(fname,img,ext,cmap=None,dtype='%f'):
+    ext=fname.split('.')[-1]
+    if ext=='txt':
+        np.savetxt(fname,img,fmt=dtype)
+    elif ext=='npy':
+        np.save(fname,img,fmt=dtype)
+    else:
+        if cmap!=None:
+            plt.imsave(fname,img)
+        else:
+            plt.imsave(fname,img,cmap=cmap)
 
 
 def getAllFilesInFolder(folderpath):
@@ -27,6 +37,10 @@ class BRNSProcessing:
         self.generateFusion()
         self.generateChc()
         self.generateFColor()
+
+        #To see how to work with individual processing types for the utility functions
+        self.members={'L':self.L,'H':self.H,'imfused':self.imfused,'choice':self.choice,'pc_img':self.pc_img}
+        self.methods={'GrayImg':self.genGrayImg,'HSIImg':self.genHSIImg,'CCImg':self.genCCImg,'InvImg':self.genInvImg,'OMImg':self.genOMImg,'IMImg':self.genIMImg,'VCplus':self.genVCplus,'VCminus':self.genVCminus,'OvsBImg':self.genOvsBImg,'VDImg':self.genVDImg,'VEImg':self.genVEImg,'adjust_gamma':self.adjust_gamma}
 
     def loadLH(self,imgfpath):
         img=loadimgfile(imgfpath)
@@ -141,13 +155,22 @@ class BRNSProcessing:
         HE=self.H**0.2
         LE=np.uint8(np.clip(LE*255,0,255))
         HE=np.uint8(np.clip(HE*255,0,255))
-        return np.concatenate((generateFColor(LE,BRNSProcessing.clut,self.choice),generateFColor(HE,BRNSProcessing.clut,self.choice)),axis=1)
+        imfused=self.imfused
+        self.imfused=LE
+        self.generateFColor()
+        Lpc_img=self.pc_img
+        self.imfused=HE
+        self.generateFColor()
+        Hpc_img=self.pc_img
+        self.imfused=imfused
+        self.generateFColor()
+        return np.concatenate((Lpc_img,Hpc_img),axis=1)
 
     def genHSIImg(self):
-        R=pc_img[...,0]
-        G=pc_img[...,1]
-        B=pc_img[...,2]
-        RGB=pc_img.sum(axis=2)
+        R=self.pc_img[...,0]
+        G=self.pc_img[...,1]
+        B=self.pc_img[...,2]
+        RGB=self.pc_img.sum(axis=2)
         r=R/RGB
         g=G/RGB
         b=B/RGB
@@ -157,14 +180,78 @@ class BRNSProcessing:
         th=num/den;
         the=np.arccos(th);
         H=(B>G)*(360-the)+(B<=G)*the;
-        a=pc_img.max(axis=2); b=pc_img.min(axis=2);
+        a=self.pc_img.max(axis=2); b=self.pc_img.min(axis=2);
         S=a+b;
         I=R+G+B/3;
         return np.stack(( H, S, I),axis=2)
 
 
 
+def getnewfilename(fname,folname,ext='.png'):
+	return os.path.splitext(fname)[0].split(os.path.sep)[-1]+folname.split(os.path.sep)[-1]+ext
+
+def genDataFolder(foldername,parent,ipmemName=None,ipfname=None,ext='.txt',scale_factor=-1,cmap=None,fmt='%f'):
+	if ipmemName:
+		ipFolder=os.path.join(parent,ipmemName)
+	elif scale_factor<0:
+		ipFolder=os.path.join(parent,ipfname)
+	else:
+		ipFolder=os.path.join(parent,ipfname)+'_'+str(scale_factor)
+	try:
+		os.makedirs(ipFolder)
+	except:
+		pass
+	for file in getAllFilesInFolder(foldername):
+		bpObj=BRNSProcessing(file)
+		if ipmemName:
+			saveimgfile(os.path.join(ipFolder,getnewfilename(file,'',ext)),bpObj.members[ipmemName],ext,cmap,fmt)
+		elif scale_factor<0:
+			saveimgfile(os.path.join(ipFolder,getnewfilename(file,'',ext)),bpObj.methods[ipfname](),ext,cmap,fmt)
+		else:
+			saveimgfile(os.path.join(ipFolder,getnewfilename(file,'',ext)),bpObj.methods[ipfname](scale_factor),ext,cmap,fmt)
+
+
+def genDataset(foldername):
+	try:
+		parent=os.path.join('..','BRNSDataset')
+		os.makedirs(parent)
+	except:
+		pass
+	folders=['LImgs','HImgs','fusedImgs','chcImgs','pcImgs'\
+			,'GrayImgs','HSIImgs','CCImgs','InvImgs','OMImgs','IMImgs','VCPlusImgs','VCMinusImgs','OvsBImgs']
+	folders=[os.path.join(parent,folder) for folder in folders]
+	#create the folders
+	try:
+		[os.mkdir(folder) for folder in folders]
+	except:
+		pass
+	#process thru em
+	for file in getAllFilesInFolder(foldername):
+		bpObj=BRNSProcessing(file)
+		print('starting with '+file)
+
+		pfolderFns=[bpObj.L,bpObj.H,bpObj.imfused,bpObj.choice/4,bpObj.pc_img]
+		for i,folder in enumerate(folders[:4]):
+			plt.imsave(os.path.join(folder,getnewfilename(file,'_'+folder[:-1])),pfolderFns[i],cmap='gray');
+		plt.imsave(os.path.join(folders[4],getnewfilename(file,'_'+folder[:-1])),pfolderFns[4]);
+
+		pfolderFns=[bpObj.genGrayImg,bpObj.genHSIImg,bpObj.genCCImg,bpObj.genInvImg,bpObj.genOMImg,bpObj.genIMImg,bpObj.genVCplus,bpObj.genVCminus,bpObj.genOvsBImg]
+		for i,folder in enumerate(folders[5:-1]):
+			plt.imsave(os.path.join(folder,getnewfilename(file,'_'+folder[:-1])),pfolderFns[i]());
+		plt.imsave(os.path.join(folders[-1],getnewfilename(file,'_'+folders[-1][:-1])),pfolderFns[-1](),cmap='pink');
+		
+	
+
+
+
+
 """
+Usability:
 import brns_processing as bp
-bp.BRNSProcessing('STTEST1.txt')
+bp.genDataFolder('../SRMTEST','genSegDataset',ipmemName='choice',fmt='%i')%cmap version
+bp.genDataFolder('../SRMTEST','genSegDataset',ipmemName='choice',ext='.png',cmap='gray') %go to the members list and divide by 4 before trying to save it as a image
+bp.genDataFolder('../SRMTEST','genSegDataset',ipfname='VEImg',ext='.png',scale_factor=0.5)
+bp.genDataset('../SRMTEST')
+bpObj=bp.BRNSProcessing('STTEST1.txt')
+
 #"""
