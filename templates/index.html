@@ -254,6 +254,112 @@
         });
       });
 
+      $("#hsi").click(function() {
+        $.ajax({
+          url: "/hsi",
+          type: "post",
+          dataType: "json",
+          success: function(result) {
+            $("#img").attr('src', result.img);
+          }
+        });
+      });
+
+      $("#cc").click(function() {
+        $.ajax({
+          url: "/cc",
+          type: "post",
+          dataType: "json",
+          success: function(result) {
+            $("#img").attr('src', result.img);
+          }
+        });
+      });
+
+      $("#inv").click(function() {
+        $.ajax({
+          url: "/inv",
+          type: "post",
+          dataType: "json",
+          success: function(result) {
+            $("#img").attr('src', result.img);
+          }
+        });
+      });
+
+      $("#obj").click(function() {
+        $.ajax({
+          url: "/obj",
+          type: "post",
+          dataType: "json",
+          success: function(result) {
+            $("#img").attr('src', result.img);
+          }
+        });
+      });
+
+      $("#om").click(function() {
+        $.ajax({
+          url: "/om",
+          type: "post",
+          dataType: "json",
+          success: function(result) {
+            $("#img").attr('src', result.img);
+          }
+        });
+      });
+
+      $("#im").click(function() {
+        $.ajax({
+          url: "/im",
+          type: "post",
+          dataType: "json",
+          success: function(result) {
+            $("#img").attr('src', result.img);
+          }
+        });
+      });
+
+      $("#vcminus").click(function() {
+        $.ajax({
+          url: "/vcminus",
+          type: "post",
+          dataType: "json",
+          success: function(result) {
+            $("#img").attr('src', result.img);
+          }
+        });
+      });
+
+      $("#vcplus").click(function() {
+        $.ajax({
+          url: "/vcplus",
+          type: "post",
+          dataType: "json",
+          success: function(result) {
+            $("#img").attr('src', result.img);
+          }
+        });
+      });
+
+      $("#gamma").click(function() {
+        var gamma_val = $("#gammaVal").val();
+        if(gamma_val == "") {
+          alert("Enter gamma value!");
+        } else {
+          $.ajax({
+            url: "/gamma",
+            type: "post",
+            dataType: "json",
+            data: {gamma: gamma_val, mode: "1"},
+            success: function(result) {
+              $("#img").attr('src', result.img);
+              $("#gammaVal").val("");
+            }
+          });
+        }
+      });
+
     </script>
 
   </body>

@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 from colorize import colorize
 from contrast import contrast
 from gamma import gamma_correction
+from brns_processing import BRNSProcessing
 
 app = Flask(__name__)
 
@@ -18,6 +19,7 @@ app.secret_key = 'my-secret-key'
 app.config['SESSION_TYPE'] = 'filesystem'
 
 filename_global = ""
+brns_processing = ""
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -29,6 +31,8 @@ def index():
             filename = "static/original/" + secure_filename(file.filename)
             global filename_global
             filename_global = filename
+            global brns_processing
+            brns_processing = BRNSProcessing(filename_global)
             file.save(filename)
             img = colorize(filename)
             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -88,18 +92,6 @@ def constrast():
 
         return jsonify({"img": savePath})
 
-@app.route('/gamma', methods=['GET', 'POST'])
-def gamma():
-
-    if request.method == "POST":
-
-        filename = request.form['filename']
-        gamma = request.form['gamma']
-
-        savePath = gamma_correction(gamma, filename)
-
-        return jsonify({"img": savePath})
-
 @app.route('/rgbtohsi', methods=['GET', 'POST'])
 def rgbtohsi():
 
@@ -142,3 +134,114 @@ def gray():
         im_filename = "static/grayscale/" + filename.split(".")[0] + ".jpg"
         cv2.imwrite(im_filename, img_gray)
         return jsonify({"img": im_filename})
+
+@app.route('/hsi', methods=['GET', 'POST'])
+def hsi():
+
+    if request.method == "POST":
+        global filename_global
+        filename = filename_global
+        global brns_processing
+        hsi_img = brns_processing.genHSIImg()
+        im_filename = "static/hsi/" + os.path.basename(filename.split(".")[0]) + ".jpg"
+        cv2.imwrite(im_filename, hsi_img)
+        return jsonify({"img": im_filename})
+
+@app.route('/cc', methods=['GET', 'POST'])
+def cc():
+
+    if request.method == "POST":
+        global filename_global
+        filename = filename_global
+        global brns_processing
+        cc_img = brns_processing.genCCImg()
+        im_filename = "static/cc/" + os.path.basename(filename.split(".")[0]) + ".jpg"
+        cv2.imwrite(im_filename, cc_img)
+        return jsonify({"img": im_filename})
+
+@app.route('/inv', methods=['GET', 'POST'])
+def inv():
+
+    if request.method == "POST":
+        global filename_global
+        filename = filename_global
+        global brns_processing
+        cc_img = brns_processing.genInvImg()
+        im_filename = "static/inv/" + os.path.basename(filename.split(".")[0]) + ".jpg"
+        cv2.imwrite(im_filename, cc_img)
+        return jsonify({"img": im_filename})
+
+@app.route('/obj', methods=['GET', 'POST'])
+def obj():
+
+    if request.method == "POST":
+        global filename_global
+        filename = filename_global
+        global brns_processing
+        cc_img = brns_processing.genOvsBImg()
+        im_filename = "static/obj/" + os.path.basename(filename.split(".")[0]) + ".jpg"
+        cv2.imwrite(im_filename, cc_img)
+        return jsonify({"img": im_filename})
+
+@app.route('/om', methods=['GET', 'POST'])
+def om():
+
+    if request.method == "POST":
+        global filename_global
+        filename = filename_global
+        global brns_processing
+        cc_img = brns_processing.genOMImg()
+        im_filename = "static/om/" + os.path.basename(filename.split(".")[0]) + ".jpg"
+        cv2.imwrite(im_filename, cc_img)
+        return jsonify({"img": im_filename})
+
+@app.route('/im', methods=['GET', 'POST'])
+def im():
+
+    if request.method == "POST":
+        global filename_global
+        filename = filename_global
+        global brns_processing
+        cc_img = brns_processing.genIMImg()
+        im_filename = "static/im/" + os.path.basename(filename.split(".")[0]) + ".jpg"
+        cv2.imwrite(im_filename, cc_img)
+        return jsonify({"img": im_filename})
+
+@app.route('/vcminus', methods=['GET', 'POST'])
+def vcminus():
+
+    if request.method == "POST":
+        global filename_global
+        filename = filename_global
+        global brns_processing
+        cc_img = brns_processing.genVCminus()
+        im_filename = "static/vcminus/" + os.path.basename(filename.split(".")[0]) + ".jpg"
+        cv2.imwrite(im_filename, cc_img)
+        return jsonify({"img": im_filename})
+
+@app.route('/vcplus', methods=['GET', 'POST'])
+def vcplus():
+
+    if request.method == "POST":
+        global filename_global
+        filename = filename_global
+        global brns_processing
+        cc_img = brns_processing.genVCplus()
+        im_filename = "static/vcplus/" + os.path.basename(filename.split(".")[0]) + ".jpg"
+        cv2.imwrite(im_filename, cc_img)
+        return jsonify({"img": im_filename})
+
+@app.route('/gamma', methods=['GET', 'POST'])
+def gamma():
+
+    if request.method == "POST":
+        global filename_global
+        filename = filename_global
+        global brns_processing
+
+        if request.form['mode'] == "1":
+            gamma = request.form['gamma']
+            gamma_img = brns_processing.adjust_gamma(float(gamma))
+            im_filename = "static/gamma_corrected/" + os.path.basename(filename.split(".")[0]) + ".jpg"
+            cv2.imwrite(im_filename, gamma_img)
+            return jsonify({"img": im_filename})

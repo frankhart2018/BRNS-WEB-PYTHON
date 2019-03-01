@@ -30,8 +30,8 @@ def getAllFilesInFolder(folderpath):
     return [os.path.join(root,file) for root,dir,files in os.walk(folderpath) for file in files]
 
 class BRNSProcessing:
-    clut=loadmat('eclut.mat')['CLUT']
-    noobj=loadimgfile('NOOBJECT_20-08-2018.txt')
+    clut=loadmat('images/eclut.mat')['CLUT']
+    noobj=loadimgfile('images/NOOBJECT_20-08-2018.txt')
     def __init__(self,imgfpath):
         self.loadLH(imgfpath)
         self.generateFusion()
@@ -62,21 +62,21 @@ class BRNSProcessing:
     def generateChc(self):
         L1=wiener(self.L,[5,5])
         H1=wiener(self.H,[5,5])
-        
+
         x_ax=(L1+H1)/2
         y_ax=H1-L1
-            
+
         y_s=0.17213*(x_ax**3)-1.399*(x_ax**2)+1.2392*x_ax-0.0027535
         y_p=0.228*(x_ax**3)-0.51622*(x_ax**2)+0.30413*x_ax+0.0053274
         y_al=-0.409873*(x_ax**4)+0.90975*(x_ax**3)-1.298*(x_ax**2)+0.81073*x_ax+0.0018109
         y_a=(y_p+y_al)/2
         y_b=(y_al+y_s)/2
-            
+
         self.choice=np.zeros(y_ax.shape)
         self.choice[y_ax>y_b]=1
         self.choice[self.choice==0]=2
         self.choice[y_ax<y_a]=3
-        
+
         a=L1;b=H1;c=np.log(a);d=np.log(b)
         q=c/d
         self.choice[(q<1.17)&(self.H<0.19)&(self.L<0.16)]=4
@@ -108,7 +108,7 @@ class BRNSProcessing:
 
     def adjust_gamma(self, gamma):
        invGamma = 1.0 / gamma
-       
+
        gamma_table = np.array([((i / 255.0) ** invGamma) * 255
           for i in np.arange(0, 256)]).astype("uint8")
        return cv2.LUT(np.uint8(self.pc_img*255), gamma_table)
@@ -239,8 +239,8 @@ def genDataset(foldername):
 		for i,folder in enumerate(folders[5:-1]):
 			plt.imsave(os.path.join(folder,getnewfilename(file,'_'+folder[:-1])),pfolderFns[i]());
 		plt.imsave(os.path.join(folders[-1],getnewfilename(file,'_'+folders[-1][:-1])),pfolderFns[-1](),cmap='pink');
-		
-	
+
+
 
 
 
