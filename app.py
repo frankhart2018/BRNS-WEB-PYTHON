@@ -245,3 +245,33 @@ def gamma():
             im_filename = "static/gamma_corrected/" + os.path.basename(filename.split(".")[0]) + ".jpg"
             cv2.imwrite(im_filename, gamma_img)
             return jsonify({"img": im_filename})
+
+@app.route('/ve', methods=['GET', 'POST'])
+def ve():
+
+    if request.method == "POST":
+        global filename_global
+        filename = filename_global
+        global brns_processing
+
+        ve_val = float(request.form['ve'])
+
+        ve_image = brns_processing.genVEImg(ve_val)
+        im_filename = "static/ve/" + os.path.basename(filename.split(".")[0]) + ".jpg"
+        cv2.imwrite(im_filename, ve_image)
+        return jsonify({"img": im_filename})
+
+@app.route('/vd', methods=['GET', 'POST'])
+def vd():
+
+    if request.method == "POST":
+        global filename_global
+        filename = filename_global
+        global brns_processing
+
+        vd_val = float(request.form['vd'])
+
+        vd_image = brns_processing.genVDImg(vd_val)
+        im_filename = "static/vd/" + os.path.basename(filename.split(".")[0]) + ".jpg"
+        cv2.imwrite(im_filename, vd_image)
+        return jsonify({"img": im_filename})

@@ -16,17 +16,7 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
     <script>
-      $( function() {
-        $( "#slider" ).slider();
-      } );
 
-      $( function() {
-        $( "#slider1" ).slider();
-      } );
-
-      $( function() {
-        $( "#slider2" ).slider();
-      } );
     </script>
 
     <style type="text/css">
@@ -90,6 +80,7 @@
             </p>
             <p>
               <button type="button" id="veminus" class='icon-button'><img class='icon-image' src="static/ecil_icons/VE_minus.png"></button>
+              <p id="slider1-value"></p>
               <div id="slider" class='slide'></div>
               <button type="button" id="veplus" class='icon-button' style='margin-top: -120px; margin-left: 220px;'><img class='icon-image' src="static/ecil_icons/VE_plus.png"></button>
             </p>
@@ -355,6 +346,125 @@
             success: function(result) {
               $("#img").attr('src', result.img);
               $("#gammaVal").val("");
+            }
+          });
+        }
+      });
+
+      var slider = 0;
+      var slider1 = 0;
+
+      $( function() {
+        $( "#slider" ).slider({
+          min: 0,
+          max: 2,
+          step: 0.1,
+          slide: function(event, ui) {
+            slider = ui.value;
+            $.ajax({
+              url: "/ve",
+              type: "post",
+              dataType: "json",
+              data: {ve: slider},
+              success: function(result) {
+                $("#img").attr('src', result.img);
+              }
+            })
+          }
+        })
+      } );
+
+      $( function() {
+        $( "#slider1" ).slider({
+          min: 0,
+          max: 2,
+          step: 0.1,
+          slide: function(event, ui) {
+            slider1 = ui.value;
+            $.ajax({
+              url: "/vd",
+              type: "post",
+              dataType: "json",
+              data: {vd: slider1},
+              success: function(result) {
+                $("#img").attr('src', result.img);
+              }
+            });
+          }
+        });
+      } );
+
+      $( function() {
+        $( "#slider2" ).slider({
+          min: 0,
+          max: 2,
+          step: 0.1
+        });
+      } );
+
+      $("#veplus").click(function() {
+        if(slider + 0.1 <= 2.1) {
+          $("#slider").slider("value", slider + 0.1);
+          slider = slider + 0.1;
+
+          $.ajax({
+            url: "/ve",
+            type: "post",
+            dataType: "json",
+            data: {ve: slider},
+            success: function(result) {
+              $("#img").attr('src', result.img);
+            }
+          });
+        }
+      });
+
+      $("#veminus").click(function() {
+        if(slider - 0.1 >= -0.1) {
+          $("#slider").slider("value", slider - 0.1);
+          slider = slider - 0.1;
+
+          $.ajax({
+            url: "/ve",
+            type: "post",
+            dataType: "json",
+            data: {ve: slider},
+            success: function(result) {
+              $("#img").attr('src', result.img);
+            }
+          });
+        }
+      });
+
+      $("#vdplus").click(function() {
+        if(slider1 + 0.1 <= 2.1) {
+          $("#slider1").slider("value", slider1 + 0.1);
+          slider1 = slider1 + 0.1;
+
+          $.ajax({
+            url: "/vd",
+            type: "post",
+            dataType: "json",
+            data: {vd: slider1},
+            success: function(result) {
+              $("#img").attr('src', result.img);
+            }
+          });
+        }
+      });
+
+      $("#vdminus").click(function() {
+        if(slider1 - 0.1 >= -0.1) {
+          $("#slider1").slider("value", slider1 - 0.1);
+          slider1 = slider1 - 0.1;
+
+          $.ajax({
+            url: "/vd",
+            type: "post",
+            dataType: "json",
+            data: {vd: slider1},
+            success: function(result) {
+              $("#img").attr('src', result.img);
             }
           });
         }
