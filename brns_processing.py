@@ -116,7 +116,7 @@ class BRNSProcessing:
     def genVDImg(self,val):
         if val>1:
             val=2-val;
-            return self.adjust_gamma(pc_img, val)
+            return self.adjust_gamma(val)
         else:
             res_g=np.stack((cv2.cvtColor(np.uint8(self.pc_img*255),cv2.COLOR_RGB2GRAY),)*3,axis=2)
             res=(255 - cv2.threshold(res_g,(1-val)*255,255,cv2.THRESH_BINARY)[1])/255

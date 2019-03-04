@@ -4,8 +4,8 @@ from werkzeug.utils import secure_filename
 import cv2
 import numpy as np
 import os
-
 import matplotlib.pyplot as plt
+import matplotlib
 
 from colorize import colorize
 from contrast import contrast
@@ -33,6 +33,7 @@ def index():
             filename_global = filename
             global brns_processing
             brns_processing = BRNSProcessing(filename_global)
+            brns_processing.generateFColor()
             file.save(filename)
             img = colorize(filename)
             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -144,7 +145,9 @@ def hsi():
         global brns_processing
         hsi_img = brns_processing.genHSIImg()
         im_filename = "static/hsi/" + os.path.basename(filename.split(".")[0]) + ".jpg"
-        cv2.imwrite(im_filename, hsi_img)
+        plt.axis('off')
+        plt.imshow(hsi_img)
+        plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
         return jsonify({"img": im_filename})
 
 @app.route('/cc', methods=['GET', 'POST'])
@@ -156,7 +159,9 @@ def cc():
         global brns_processing
         cc_img = brns_processing.genCCImg()
         im_filename = "static/cc/" + os.path.basename(filename.split(".")[0]) + ".jpg"
-        cv2.imwrite(im_filename, cc_img)
+        plt.axis('off')
+        plt.imshow(cc_img)
+        plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
         return jsonify({"img": im_filename})
 
 @app.route('/inv', methods=['GET', 'POST'])
@@ -166,9 +171,11 @@ def inv():
         global filename_global
         filename = filename_global
         global brns_processing
-        cc_img = brns_processing.genInvImg()
+        inv_img = brns_processing.genInvImg()
         im_filename = "static/inv/" + os.path.basename(filename.split(".")[0]) + ".jpg"
-        cv2.imwrite(im_filename, cc_img)
+        plt.axis('off')
+        plt.imshow(inv_img)
+        plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
         return jsonify({"img": im_filename})
 
 @app.route('/obj', methods=['GET', 'POST'])
@@ -178,9 +185,11 @@ def obj():
         global filename_global
         filename = filename_global
         global brns_processing
-        cc_img = brns_processing.genOvsBImg()
+        obj_img = brns_processing.genOvsBImg()
         im_filename = "static/obj/" + os.path.basename(filename.split(".")[0]) + ".jpg"
-        cv2.imwrite(im_filename, cc_img)
+        plt.axis('off')
+        plt.imshow(obj_img)
+        plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
         return jsonify({"img": im_filename})
 
 @app.route('/om', methods=['GET', 'POST'])
@@ -190,9 +199,11 @@ def om():
         global filename_global
         filename = filename_global
         global brns_processing
-        cc_img = brns_processing.genOMImg()
+        om_img = brns_processing.genOMImg()
         im_filename = "static/om/" + os.path.basename(filename.split(".")[0]) + ".jpg"
-        cv2.imwrite(im_filename, cc_img)
+        plt.axis('off')
+        plt.imshow(om_img)
+        plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
         return jsonify({"img": im_filename})
 
 @app.route('/im', methods=['GET', 'POST'])
@@ -202,9 +213,11 @@ def im():
         global filename_global
         filename = filename_global
         global brns_processing
-        cc_img = brns_processing.genIMImg()
+        im_img = brns_processing.genIMImg()
         im_filename = "static/im/" + os.path.basename(filename.split(".")[0]) + ".jpg"
-        cv2.imwrite(im_filename, cc_img)
+        plt.axis('off')
+        plt.imshow(im_img)
+        plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
         return jsonify({"img": im_filename})
 
 @app.route('/vcminus', methods=['GET', 'POST'])
@@ -214,9 +227,11 @@ def vcminus():
         global filename_global
         filename = filename_global
         global brns_processing
-        cc_img = brns_processing.genVCminus()
+        vcminus_img = brns_processing.genVCminus()
         im_filename = "static/vcminus/" + os.path.basename(filename.split(".")[0]) + ".jpg"
-        cv2.imwrite(im_filename, cc_img)
+        plt.axis('off')
+        plt.imshow(vcminus_img)
+        plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
         return jsonify({"img": im_filename})
 
 @app.route('/vcplus', methods=['GET', 'POST'])
@@ -226,9 +241,11 @@ def vcplus():
         global filename_global
         filename = filename_global
         global brns_processing
-        cc_img = brns_processing.genVCplus()
+        vcplus_img = brns_processing.genVCplus()
         im_filename = "static/vcplus/" + os.path.basename(filename.split(".")[0]) + ".jpg"
-        cv2.imwrite(im_filename, cc_img)
+        plt.axis('off')
+        plt.imshow(vcplus_img)
+        plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
         return jsonify({"img": im_filename})
 
 @app.route('/gamma', methods=['GET', 'POST'])
@@ -244,7 +261,7 @@ def gamma():
             gamma_img = brns_processing.adjust_gamma(float(gamma))
             im_filename = "static/gamma_corrected/" + os.path.basename(filename.split(".")[0]) + ".jpg"
             cv2.imwrite(im_filename, gamma_img)
-            return jsonify({"img": im_filename})
+            return jsonify({"img": im_filename, "gamma": round(float(gamma), 2)})
 
 @app.route('/ve', methods=['GET', 'POST'])
 def ve():
@@ -254,12 +271,14 @@ def ve():
         filename = filename_global
         global brns_processing
 
-        ve_val = float(request.form['ve'])
+        ve_val = round(float(request.form['ve']), 2)
 
-        ve_image = brns_processing.genVEImg(ve_val)
+        ve_img = brns_processing.genVEImg(ve_val)
         im_filename = "static/ve/" + os.path.basename(filename.split(".")[0]) + ".jpg"
-        cv2.imwrite(im_filename, ve_image)
-        return jsonify({"img": im_filename})
+        plt.axis('off')
+        plt.imshow(ve_img)
+        plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
+        return jsonify({"img": im_filename, "ve": round(float(ve_val), 2)})
 
 @app.route('/vd', methods=['GET', 'POST'])
 def vd():
@@ -271,7 +290,9 @@ def vd():
 
         vd_val = float(request.form['vd'])
 
-        vd_image = brns_processing.genVDImg(vd_val)
+        vd_img = brns_processing.genVDImg(vd_val)
         im_filename = "static/vd/" + os.path.basename(filename.split(".")[0]) + ".jpg"
-        cv2.imwrite(im_filename, vd_image)
-        return jsonify({"img": im_filename})
+        plt.axis('off')
+        plt.imshow(vd_img)
+        plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
+        return jsonify({"img": im_filename, "vd": round(float(vd_val), 2)})

@@ -79,12 +79,13 @@
               <button type="button" id="vcplus" class='icon-button'><img class='icon-image' src="static/ecil_icons/VC_plus.png"></button>
             </p>
             <p>
+              <span id="slider1-value"></span><br>
               <button type="button" id="veminus" class='icon-button'><img class='icon-image' src="static/ecil_icons/VE_minus.png"></button>
-              <p id="slider1-value"></p>
               <div id="slider" class='slide'></div>
               <button type="button" id="veplus" class='icon-button' style='margin-top: -120px; margin-left: 220px;'><img class='icon-image' src="static/ecil_icons/VE_plus.png"></button>
             </p>
             <p>
+              <span id="slider2-value"></span><br>
               <button type="button" id="vdminus" class='icon-button'><img class='icon-image' src="static/ecil_icons/VD_minus.png"></button>
               <div id="slider1" class='slide'></div>
               <button type="button" id="vdplus" class='icon-button' style='margin-top: -120px; margin-left: 220px;'><img class='icon-image' src="static/ecil_icons/VD_plus.png"></button>
@@ -95,6 +96,7 @@
               <button type="button" id="hsi" class='icon-button'><img class='icon-image' src="static/ecil_icons/HSI.png"></button>
             </p>
             <p>
+              <span id="slider3-value"></span><br>
               <button type="button" id="gammaminus" class='icon-button'><img class='icon-image' src="static/ecil_icons/gamma_minus.png"></button>
               <div id="slider2" class='slide'></div>
               <button type="button" id="gammaplus" class='icon-button' style='margin-top: -120px; margin-left: 220px;'><img class='icon-image' src="static/ecil_icons/gamma_plus.png"></button>
@@ -229,6 +231,9 @@
           data: {},
           success: function(result) {
             $("#img").attr('src', result.img);
+            $("#slider1-value").html("");
+            $("#slider2-value").html("");
+            $("#slider3-value").html("");
           }
         });
       });
@@ -346,6 +351,7 @@
             success: function(result) {
               $("#img").attr('src', result.img);
               $("#gammaVal").val("");
+              $("#slider3-value").html("Gamma value = " + result.gamma);
             }
           });
         }
@@ -353,6 +359,7 @@
 
       var slider = 0;
       var slider1 = 0;
+      var slider2 = 0;
 
       $( function() {
         $( "#slider" ).slider({
@@ -367,7 +374,9 @@
               dataType: "json",
               data: {ve: slider},
               success: function(result) {
-                $("#img").attr('src', result.img);
+                console.log(result);
+                $("#img").attr('src', result.img + '?' + new Date().getTime());
+                $("#slider1-value").html("VE value = " + result.ve);
               }
             })
           }
@@ -387,7 +396,8 @@
               dataType: "json",
               data: {vd: slider1},
               success: function(result) {
-                $("#img").attr('src', result.img);
+                $("#img").attr('src', result.img + '?' + new Date().getTime());
+                $("#slider2-value").html("VD value = " + result.vd);
               }
             });
           }
@@ -398,7 +408,20 @@
         $( "#slider2" ).slider({
           min: 0,
           max: 2,
-          step: 0.1
+          step: 0.1,
+          slide: function(event, ui) {
+            slider2 = ui.value;
+            $.ajax({
+              url: "/gamma",
+              type: "post",
+              dataType: "json",
+              data: {gamma: slider2, mode: "1"},
+              success: function(result) {
+                $("#img").attr('src', result.img + '?' + new Date().getTime());
+                $("#slider3-value").html("Gamma value = " + result.gamma);
+              }
+            })
+          }
         });
       } );
 
@@ -413,7 +436,8 @@
             dataType: "json",
             data: {ve: slider},
             success: function(result) {
-              $("#img").attr('src', result.img);
+              $("#img").attr('src', result.img + '?' + new Date().getTime());
+              $("#slider1-value").html("VE value = " + result.ve);
             }
           });
         }
@@ -430,7 +454,8 @@
             dataType: "json",
             data: {ve: slider},
             success: function(result) {
-              $("#img").attr('src', result.img);
+              $("#img").attr('src', result.img + '?' + new Date().getTime());
+              $("#slider1-value").html("VE value = " + result.ve);
             }
           });
         }
@@ -447,7 +472,8 @@
             dataType: "json",
             data: {vd: slider1},
             success: function(result) {
-              $("#img").attr('src', result.img);
+              $("#img").attr('src', result.img + '?' + new Date().getTime());
+              $("#slider2-value").html("VD value = " + result.vd);
             }
           });
         }
@@ -464,7 +490,44 @@
             dataType: "json",
             data: {vd: slider1},
             success: function(result) {
-              $("#img").attr('src', result.img);
+              $("#img").attr('src', result.img + '?' + new Date().getTime());
+              $("#slider2-value").html("VD value = " + result.vd);
+            }
+          });
+        }
+      });
+
+      $("#gammaplus").click(function() {
+        if(slider2 + 0.1 <= 2.1) {
+          $("#slider2").slider("value", slider2 + 0.1);
+          slider2 = slider2 + 0.1;
+
+          $.ajax({
+            url: "/gamma",
+            type: "post",
+            dataType: "json",
+            data: {gamma: slider2, mode: "1"},
+            success: function(result) {
+              $("#img").attr('src', result.img + '?' + new Date().getTime());
+              $("#slider3-value").html("Gamma value = " + result.gamma);
+            }
+          });
+        }
+      });
+
+      $("#gammaminus").click(function() {
+        if(slider2 - 0.1 >= -0.1) {
+          $("#slider2").slider("value", slider2 - 0.1);
+          slider2 = slider2 - 0.1;
+
+          $.ajax({
+            url: "/gamma",
+            type: "post",
+            dataType: "json",
+            data: {gamma: slider2, mode: "1"},
+            success: function(result) {
+              $("#img").attr('src', result.img + '?' + new Date().getTime());
+              $("#slider3-value").html("Gamma value = " + result.gamma);
             }
           });
         }
