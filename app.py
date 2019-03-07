@@ -157,8 +157,8 @@ def cc():
         global filename_global
         filename = filename_global
         global brns_processing
-        filename_img = "static/colorized/" + os.path.basename(filename).split(".")[0] + ".jpg"
         cc_img = brns_processing.genCCImg()
+        filename_img = "static/colorized/" + os.path.basename(filename).split(".")[0] + ".jpg"
         im_real = cv2.imread(filename_img)
         shape_tuple = (im_real.shape[0], im_real.shape[1])
         cc_img = cv2.resize(cc_img, shape_tuple)

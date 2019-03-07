@@ -164,7 +164,8 @@ class BRNSProcessing:
         Hpc_img=self.pc_img
         self.imfused=imfused
         self.generateFColor()
-        return np.concatenate((Lpc_img,Hpc_img),axis=1)
+        return np.vstack((Lpc_img, Hpc_img))
+        # return np.concatenate((Lpc_img,Hpc_img),axis=1)
 
     def genHSIImg(self):
         R=self.pc_img[...,0]

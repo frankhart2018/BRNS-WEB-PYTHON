@@ -130,46 +130,50 @@
     <script>
 
       var imagesize = $('#img').width();
+      var x1 = 0, x2 = 0, y1 = 0, y2 = 0;
 
-      $('#zoomout').on('click', function(){
-          imagesize = imagesize - 5;
-          $('#img').width(imagesize);
+      $("#img").imgAreaSelect({
+        handles: true,
+        onSelectEnd: function(img, selection) {
+          x1 = selection.x1;
+          x2 = selection.x2;
+          y1 = selection.y1;
+          y2 = selection.y2;
+        }
       });
 
-      $('#zoomin').on('click', function(){
-          imagesize = imagesize + 5;
-          $('#img').width(imagesize);
+      var $ias = $('#img').imgAreaSelect({
+          instance: true
       });
-
-      var select = false;
 
       $("#zeff").click(function() {
-          if(!select) {
-              var filename = $("#img").attr("src");
+          var filename = $("#img").attr("src");
 
-              console.log(filename);
-
-              $('#img').imgAreaSelect({
-                  handles: true,
-                  onSelectEnd: function(img, selection) {
-                    $.ajax({
-                      url: "/zeff",
-                      type: "post",
-                      dataType: "json",
-                      data: {x1: selection.x1, x2: selection.x2, y1: selection.y1, y2: selection.y2, filename: filename},
-                      success: function(result) {
-                        alert(result.zeff);
-                      }
-                    });
-                  }
-              });
+          if(x1 == 0 && x2 == 0 && y1 == 0 && y2 == 0) {
+            window.swal({
+              title: "Error!",
+              text: "Select an area"
+            });
           } else {
-              $('#img').imgAreaSelect({
-                  remove: true
-              });
+            window.swal({
+              title: "Processing...",
+              text: "Please wait"
+            });
+            $.ajax({
+              url: "/zeff",
+              type: "post",
+              dataType: "json",
+              data: {x1: x1, x2: x2, y1: y1, y2: y2, filename: filename},
+              success: function(result) {
+                $ias.cancelSelection();
+                swal.close();
+                window.swal({
+                  title: "Result (zeff)",
+                  text: "Zeff = " + result.zeff
+                });
+              }
+            });
           }
-
-          select = !select;
       });
 
       $("#contrast").click(function() {
@@ -184,31 +188,6 @@
               $("#img").attr('src', result.img);
             }
           });
-      });
-
-      var toggle_gamma = false;
-
-      $("#gamma").click(function() {
-        if(!toggle_gamma)
-          $("#gamma-p").show();
-        else
-          $("#gamma-p").hide();
-        toggle_gamma = !toggle_gamma;
-      });
-
-      $("#gamma-correct").click(function() {
-        var filename = $("#img").attr('src');
-        var gamma = $("#gamma-value").val();
-
-        $.ajax({
-          url: "/gamma",
-          type: "post",
-          dataType: "json",
-          data: {filename: filename, gamma: gamma},
-          success: function(result) {
-            $("#img").attr('src', result.img);
-          }
-        });
       });
 
       $("#rgbtohsi").click(function() {
