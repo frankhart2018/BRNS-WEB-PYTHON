@@ -34,7 +34,7 @@ conllu==0.11
 contextlib2==0.5.5
 cookies==2.2.1
 cryptography==2.2.2
-cv2=3.4.1
+cv2==3.4.1
 cycler==0.10.0
 cymem==1.31.2
 Cython==0.26.1
