@@ -9,7 +9,6 @@ astor==0.7.1
 astroid==1.6.3
 astropy==3.0.2
 attrs==18.1.0
-autocrop==0.1.0
 aws-xray-sdk==0.95
 awscli==1.16.29
 Babel==2.5.3
