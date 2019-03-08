@@ -172,7 +172,6 @@ pyjsparser==2.5.2
 PyJWT==1.4.2
 pylint==1.8.4
 pymongo==3.7.2
-pyodbc==4.0.23
 PyOpenGL==3.1.0
 pyOpenSSL==18.0.0
 pyparsing==2.2.0
