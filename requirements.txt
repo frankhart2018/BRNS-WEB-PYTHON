@@ -29,7 +29,6 @@ cffi==1.11.2
 chardet==3.0.4
 click==6.7
 cloudpickle==0.5.3
-clyent==1.2.2
 colorama==0.3.9
 ConfigArgParse==0.13.0
 conllu==0.11
