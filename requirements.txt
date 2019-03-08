@@ -118,7 +118,6 @@ murmurhash==0.28.0
 mysql-connector==2.1.6
 nbconvert==5.3.1
 nbformat==4.4.0
-nervananeon==2.6.0
 networkx==2.1
 nose==1.3.7
 notify-run==0.0.11
@@ -217,7 +216,6 @@ Send2Trash==1.5.0
 simplegeneric==0.8.1
 singledispatch==3.4.0.3
 six==1.11.0
-smartcrop==0.4
 snowballstemmer==1.2.1
 sortedcollections==0.6.1
 sortedcontainers==1.5.10
