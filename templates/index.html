@@ -147,6 +147,7 @@
               <button type="button" id="inv" class='icon-button'><img class='icon-image' src="static/ecil_icons/INV.png"></button>
               <button type="button" id="obj" class='icon-button'><img class='icon-image' src="static/ecil_icons/obj_vs_bg.png"></button>
               <button type="button" id="cc" class='icon-button'><img class='icon-image' src="static/ecil_icons/CC.png"></button>
+              <button type="button" id="new" class='icon-button'><img class='icon-image' src="static/ecil_icons/new.png"></button>
             </p>
             <p>
               <button type="button" id="vcminus" class='icon-button'><img class='icon-image' src="static/ecil_icons/VC_minus.png"></button>
@@ -658,6 +659,16 @@
             }
           });
         }
+      });
+
+      $("#new").click(function() {
+        $.ajax({
+          url: "/",
+          type: "get",
+          success: function() {
+            window.location.href = '/';
+          }
+        })
       });
 
     </script>

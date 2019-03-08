@@ -28,13 +28,17 @@ def index():
 
         if "inputFile" in request.files:
             file = request.files['inputFile']
-            filename = "static/original/" + secure_filename(file.filename)
+            file_name = secure_filename(file.filename)
+            filename = "static/original/" + file_name
+            file.save(filename)
+            np_data = np.loadtxt(filename, dtype=int)
+            filename = "static/original/" + file_name.split(".")[0] + ".npy"
+            np.save(filename, np_data)
             global filename_global
             filename_global = filename
             global brns_processing
             brns_processing = BRNSProcessing(filename_global)
             brns_processing.generateFColor()
-            file.save(filename)
             img = colorize(filename)
             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             im_filename = "static/colorized/" + file.filename.split(".")[0] + ".jpg"
