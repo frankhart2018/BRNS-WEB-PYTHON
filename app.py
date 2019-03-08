@@ -4,7 +4,6 @@ from werkzeug.utils import secure_filename
 import cv2
 import numpy as np
 import os
-matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib
 
