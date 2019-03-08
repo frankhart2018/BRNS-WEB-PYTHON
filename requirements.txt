@@ -3,7 +3,6 @@ alabaster==0.7.10
 aniso8601==4.0.1
 appdirs==1.4.3
 appnope==0.1.0
-appscript==1.0.1
 asn1crypto==0.24.0
 astor==0.7.1
 astroid==1.6.3
