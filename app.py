@@ -68,15 +68,15 @@ def zeff():
         c = np.log(a)
         d = np.log(b)
         R = c/d
-        zeff = -1.5*(R**2)+23*R-17
+        zeff = 9.1*(R**2)-16.5*R+14
         zeff1 = np.reshape(zeff, le.shape)
 
         I = res
 
-        s = request.form['x1']
-        t = request.form['y1']
-        u = request.form['x2']
-        v = request.form['y2']
+        s = request.form['y1']
+        t = request.form['x1']
+        u = request.form['y2']
+        v = request.form['x2']
 
         w = int(s) + int(u)
         y = int(t) + int(v)
@@ -260,16 +260,22 @@ def vcplus():
 def gamma():
 
     if request.method == "POST":
-        global filename_global
-        filename = filename_global
-        global brns_processing
+        # global filename_global
+        # filename = filename_global
+        # global brns_processing
+        #
+        # if request.form['mode'] == "1":
+        #     gamma = request.form['gamma']
+        #     gamma_img = brns_processing.adjust_gamma(float(gamma))
+        #     im_filename = "static/gamma_corrected/" + os.path.basename(filename.split(".")[0]) + ".jpg"
+        #     cv2.imwrite(im_filename, gamma_img)
+        #     return jsonify({"img": im_filename, "gamma": round(float(gamma), 2)})
 
-        if request.form['mode'] == "1":
-            gamma = request.form['gamma']
-            gamma_img = brns_processing.adjust_gamma(float(gamma))
-            im_filename = "static/gamma_corrected/" + os.path.basename(filename.split(".")[0]) + ".jpg"
-            cv2.imwrite(im_filename, gamma_img)
-            return jsonify({"img": im_filename, "gamma": round(float(gamma), 2)})
+        global filename_global
+        filename = "static/colorized/" + os.path.basename(filename_global).split(".")[0] + ".jpg"
+        gamma = request.form['gamma']
+        savePath = gamma_correction(gamma, filename)
+        return jsonify({"img": savePath, "gamma": gamma})
 
 @app.route('/ve', methods=['GET', 'POST'])
 def ve():
