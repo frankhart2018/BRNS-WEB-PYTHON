@@ -6,6 +6,7 @@ from scipy.io import loadmat
 import matplotlib.pyplot as plt
 import cv2
 
+import time
 
 def loadimgfile(fpath):
     extension=fpath.split('.')[-1]
@@ -60,8 +61,13 @@ class BRNSProcessing:
 
 
     def generateChc(self):
+
+        start = time.time()
+
         L1=wiener(self.L,[5,5])
         H1=wiener(self.H,[5,5])
+
+        print("Weiner time = ", time.time() - start)
 
         x_ax=(L1+H1)/2
         y_ax=H1-L1
@@ -79,8 +85,7 @@ class BRNSProcessing:
 
         a=L1;b=H1;c=np.log(a);d=np.log(b)
         q=c/d
-        self.choice[(q<1.17)&(self.H<0.19)&(self.L<0.16)]=4
-        self.choice[(q<1.24)&(self.H<0.42)&(self.L<0.3)]=4
+        self.choice[(x_ax<=0.45)&(x_ax>=0.06)&(y_ax<y_a)]=4
         self.choice[(x_ax<0.06) & (y_ax<0.06)]=1;
         self.choice= (self.choice-1).astype(np.uint8)
 

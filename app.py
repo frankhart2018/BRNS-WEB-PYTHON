@@ -38,11 +38,12 @@ def index():
             filename_global = filename
             global brns_processing
             brns_processing = BRNSProcessing(filename_global)
-            brns_processing.generateFColor()
-            img = colorize(filename)
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            img = brns_processing.pc_img
+
             im_filename = "static/colorized/" + file.filename.split(".")[0] + ".jpg"
-            cv2.imwrite(im_filename, img)
+            plt.axis('off')
+            plt.imshow(img)
+            plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
             return render_template('index.html', upload=False, img=im_filename)
         else:
             flash("No image selected")
@@ -68,7 +69,7 @@ def zeff():
         c = np.log(a)
         d = np.log(b)
         R = c/d
-        zeff = 9.1*(R**2)-16.5*R+14
+        zeff = 5.7*(R**2)-7.4*R+8
         zeff1 = np.reshape(zeff, le.shape)
 
         I = res
