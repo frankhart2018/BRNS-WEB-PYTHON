@@ -53,10 +53,10 @@ class BRNSProcessing:
         self.H=B/N
 
     def generateFusion(self):
-        LE=self.L**3.2
-        HE=self.H**0.2
-        a1,(h1,v1,d1)=pywt.dwt2(LE,'haar')
-        a2,(h2,v2,d2)=pywt.dwt2(HE,'haar')
+        self.LE=self.L**3.2
+        self.HE=self.H**0.2
+        a1,(h1,v1,d1)=pywt.dwt2(self.LE,'haar')
+        a2,(h2,v2,d2)=pywt.dwt2(self.HE,'haar')
         self.imfused=(np.clip(pywt.idwt2((0.6*a1+a2/2,(h1+h2,v1+v2,d1+d2)),'haar'),0,1)*255).astype(np.uint8)
 
 
@@ -156,15 +156,15 @@ class BRNSProcessing:
         return 4**self.pc_img*((255-res_g1)/255)
 
     def genCCImg(self):
-        LE=self.L**3.2
-        HE=self.H**0.2
-        LE=np.uint8(np.clip(LE*255,0,255))
-        HE=np.uint8(np.clip(HE*255,0,255))
+        self.LE=self.L**3.2
+        self.HE=self.H**0.2
+        self.LE=np.uint8(np.clip(self.LE*255,0,255))
+        self.HE=np.uint8(np.clip(self.HE*255,0,255))
         imfused=self.imfused
-        self.imfused=LE
+        self.imfused=self.LE
         self.generateFColor()
         Lpc_img=self.pc_img
-        self.imfused=HE
+        self.imfused=self.HE
         self.generateFColor()
         Hpc_img=self.pc_img
         self.imfused=imfused

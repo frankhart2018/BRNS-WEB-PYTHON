@@ -6,6 +6,7 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 import matplotlib
+from PIL import Image
 
 from colorize import colorize
 from contrast import contrast
@@ -74,15 +75,13 @@ def zeff():
 
         I = res
 
-        s = request.form['y1']
-        t = request.form['x1']
-        u = request.form['y2']
-        v = request.form['x2']
+        s = request.form['x1']
+        t = request.form['y1']
+        u = request.form['x2']
+        v = request.form['y2']
 
         w = int(s) + int(u)
         y = int(t) + int(v)
-
-        print(t, y, s, w)
 
         g = zeff1[int(t):int(y), int(s):int(w)]
         return jsonify({'zeff': np.mean(g)})
