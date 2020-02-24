@@ -9,6 +9,8 @@ static/grayscale
 static/hsi
 static/im
 static/inv
+static/model
+static/nn
 static/obj
 static/om
 static/original

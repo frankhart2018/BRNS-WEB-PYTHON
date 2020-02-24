@@ -4,7 +4,6 @@ import numpy as np
 from numpy.fft import fft2,ifft2
 from  scipy.signal import wiener
 from scipy.io import loadmat
-from scipy.misc import imsave
 import pandas
 import matplotlib.pyplot as plt
 

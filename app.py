@@ -7,11 +7,20 @@ import os
 import matplotlib.pyplot as plt
 import matplotlib
 from PIL import Image
+import time
+import torch
+import torch.nn as nn
+import torchvision.transforms as transforms
+import torchvision
+import torchvision.datasets as datasets
+from torch.autograd import Variable
+import torch.nn.functional as F
 
 from colorize import colorize
 from contrast import contrast
 from gamma import gamma_correction
 from brns_processing import BRNSProcessing
+from predict import predict_function
 
 app = Flask(__name__)
 
@@ -21,6 +30,57 @@ app.config['SESSION_TYPE'] = 'filesystem'
 
 filename_global = ""
 brns_processing = ""
+
+class CNN(nn.Module):
+    def __init__(self):
+        super(CNN,self).__init__()
+
+        self.cnn1 = nn.Conv2d(in_channels=3, out_channels=8, kernel_size=3,stride=1, padding=1)
+        self.batchnorm1 = nn.BatchNorm2d(8)
+        self.relu = nn.ReLU()
+        self.maxpool1 = nn.MaxPool2d(kernel_size=2)
+
+        self.cnn2 = nn.Conv2d(in_channels=8, out_channels=32, kernel_size=5, stride=1, padding=2)
+        self.batchnorm2 = nn.BatchNorm2d(32)
+        self.maxpool2 = nn.MaxPool2d(kernel_size=2)
+
+        self.fc1 = nn.Linear(in_features=8192, out_features=4000)
+        self.droput = nn.Dropout(p=0.5)
+        self.fc2 = nn.Linear(in_features=4000, out_features=2000)
+        self.droput = nn.Dropout(p=0.5)
+        self.fc3 = nn.Linear(in_features=2000, out_features=500)
+        self.droput = nn.Dropout(p=0.5)
+        self.fc4 = nn.Linear(in_features=500, out_features=50)
+        self.droput = nn.Dropout(p=0.5)
+        self.fc5 = nn.Linear(in_features=50, out_features=2)
+
+    def forward(self,x):
+        out = self.cnn1(x)
+        out = self.batchnorm1(out)
+        out = self.relu(out)
+        out = self.maxpool1(out)
+        out = self.cnn2(out)
+        out = self.batchnorm2(out)
+        out = self.relu(out)
+        out = self.maxpool2(out)
+        out = out.view(-1,8192)
+        out = self.fc1(out)
+        out = self.relu(out)
+        out = self.droput(out)
+        out = self.fc2(out)
+        out = self.relu(out)
+        out = self.droput(out)
+        out = self.fc3(out)
+        out = self.relu(out)
+        out = self.droput(out)
+        out = self.fc4(out)
+        out = self.relu(out)
+        out = self.droput(out)
+        out = self.fc5(out)
+        return out
+
+model = CNN()
+model.load_state_dict(torch.load('static/model/vanilla-cnn-colored.pth'))
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -42,9 +102,7 @@ def index():
             img = brns_processing.pc_img
 
             im_filename = "static/colorized/" + file.filename.split(".")[0] + ".jpg"
-            plt.axis('off')
-            plt.imshow(img)
-            plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
+            matplotlib.image.imsave(im_filename, img)
             return render_template('index.html', upload=False, img=im_filename)
         else:
             flash("No image selected")
@@ -57,33 +115,41 @@ def zeff():
 
     if request.method == "POST":
 
-        filename = request.form['filename']
+        filename_orig = request.form['filename']
 
-        im = cv2.imread(filename)
-
-        filename = "static/original/" + os.path.basename(filename).split(".")[0] + ".npy"
+        filename = "static/original/" + os.path.basename(filename_orig).split(".")[0] + ".npy"
 
         res, le, he = colorize(filename, all=True)
-
-        a = le
-        b = he
-        c = np.log(a)
-        d = np.log(b)
-        R = c/d
-        zeff = 5.7*(R**2)-7.4*R+8
-        zeff1 = np.reshape(zeff, le.shape)
-
-        I = res
 
         s = request.form['x1']
         t = request.form['y1']
         u = request.form['x2']
         v = request.form['y2']
 
+        le = le[int(t):int(t)+40, int(s):int(s)+40]
+        he = he[int(t):int(t)+40, int(s):int(s)+40]
+        cv2.imwrite("static/le.jpg", le)
+        cv2.imwrite("static/he.jpg", he)
+        a = le.flatten()
+        b = he.flatten()
+        c = np.log(a)
+        d = np.log(b)
+        R = c/d
+
+        np.savetxt('R.txt', R)
+        zeff = 5.7*(R**2)-7.4*R+8
+        np.savetxt('zeff.txt', zeff)
+        zeff1 = np.reshape(zeff, le.shape)
+        print(zeff1.shape)
+        I = res
+
+        print(s, t)
+
         w = int(s) + int(u)
         y = int(t) + int(v)
 
-        g = zeff1[int(t):int(y), int(s):int(w)]
+        g = zeff1[int(t):int(t)+40, int(s):int(s)+40]
+        cv2.imwrite("static/" + filename_orig.split("/")[-1], g)
         return jsonify({'zeff': np.mean(g)})
 
 @app.route('/constrast', methods=['GET', 'POST'])
@@ -260,17 +326,6 @@ def vcplus():
 def gamma():
 
     if request.method == "POST":
-        # global filename_global
-        # filename = filename_global
-        # global brns_processing
-        #
-        # if request.form['mode'] == "1":
-        #     gamma = request.form['gamma']
-        #     gamma_img = brns_processing.adjust_gamma(float(gamma))
-        #     im_filename = "static/gamma_corrected/" + os.path.basename(filename.split(".")[0]) + ".jpg"
-        #     cv2.imwrite(im_filename, gamma_img)
-        #     return jsonify({"img": im_filename, "gamma": round(float(gamma), 2)})
-
         global filename_global
         filename = "static/colorized/" + os.path.basename(filename_global).split(".")[0] + ".jpg"
         gamma = request.form['gamma']
@@ -301,7 +356,6 @@ def vd():
         global filename_global
         filename = filename_global
         global brns_processing
-
         vd_val = float(request.form['vd'])
 
         vd_img = brns_processing.genVDImg(vd_val)
@@ -310,3 +364,31 @@ def vd():
         plt.imshow(vd_img)
         plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
         return jsonify({"img": im_filename, "vd": round(float(vd_val), 2)})
+
+@app.route('/save', methods=['POST'])
+def save():
+
+    if request.method == "POST":
+        filename = request.form['filename']
+        im = cv2.imread(filename)
+        im = cv2.resize(im, (640, 512))
+        print(im.shape)
+        s = request.form['x1']
+        t = request.form['y1']
+        u = request.form['x2']
+        v = request.form['y2']
+        print(s, t)
+        w = int(s) + int(u)
+        y = int(t) + int(v)
+
+        g = im[int(t):int(t)+64, int(s):int(s)+64]
+        file_save_name = "static/nn/" + filename.split("/")[-1].split(".")[0] + "_" + str(time.time()) + ".jpg"
+        cv2.imwrite(file_save_name, g)
+
+        prediction = predict_function(file_save_name, model)
+        icon = "success"
+
+        if(prediction == "Explosive"):
+            icon = "error"
+
+        return jsonify({'icon': icon, 'prediction': prediction})

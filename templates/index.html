@@ -127,7 +127,7 @@
       </form>
     {% else %}
       <div class="after-content">
-        <img src="{{img}}" id="img" style="width: 500px; height; 300px; float: left;">
+        <img src="{{img}}" id="img" style="width: 640px; height; 512px; float: left;">
         <form method="post" style="float: left; margin-left: 10%;">
           <!-- <p><button id="rgbtohsi" type="button">RGB to HSI</button></p> -->
           <!-- <p><button>Overlapping</button></p> -->
@@ -164,7 +164,7 @@
             <p>
               <span id="slider2-value"></span><br>
               <button type="button" id="vdminus" class='icon-button'><img class='icon-image' src="static/ecil_icons/VD_minus.png"></button>
-              <div id="slider1" class='slide'></div>
+              <div id="slider1" classimage area select jquery='slide'></div>
               <button type="button" id="vdplus" class='icon-button' style='margin-top: -120px; margin-left: 220px;'><img class='icon-image' src="static/ecil_icons/VD_plus.png"></button>
             </p>
             <p style="text-align: center;">
@@ -186,6 +186,7 @@
               <button type="button" id="contrast" class='icon-button'><img class='icon-image' src="static/ecil_icons/cstretch.png"></button>
               <button type="button" id="zeff" class='icon-button'><img class='icon-image' src="static/ecil_icons/zeff.png"></button>
               <button type="button" id="zoom" class='icon-button'><img class='icon-image' src="static/ecil_icons/Zoom.png"></button>
+              <button type="button" id="jaccard" class='icon-button'><img class='icon-image' src="static/ecil_icons/nn.png"></button>
             </p>
           </div>
         </form>
@@ -268,6 +269,37 @@
               }
             });
           }
+      });
+
+      $("#jaccard").click(function() {
+        var filename = $("#img").attr("src");
+
+        if(x1 == 0 && x2 == 0 && y1 == 0 && y2 == 0) {
+          window.swal({
+            title: "Error!",
+            text: "Select an area"
+          });
+        } else {
+          window.swal({
+            title: "Saving...",
+            text: "Please wait"
+          });
+          $.ajax({
+            url: "/save",
+            type: "post",
+            dataType: "json",
+            data: {x1: x1, x2: x2, y1: y1, y2: y2, filename: filename},
+            success: function(result) {
+              $ias.cancelSelection();
+              swal.close();
+              window.swal({
+                icon: result.icon,
+                title: "Prediction",
+                text: "This is a " + result.prediction
+              });
+            }
+          })
+        }
       });
 
       $("#contrast").click(function() {
