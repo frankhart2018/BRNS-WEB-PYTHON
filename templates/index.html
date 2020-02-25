@@ -186,7 +186,10 @@
               <button type="button" id="contrast" class='icon-button'><img class='icon-image' src="static/ecil_icons/cstretch.png"></button>
               <button type="button" id="zeff" class='icon-button'><img class='icon-image' src="static/ecil_icons/zeff.png"></button>
               <button type="button" id="zoom" class='icon-button'><img class='icon-image' src="static/ecil_icons/Zoom.png"></button>
-              <button type="button" id="jaccard" class='icon-button'><img class='icon-image' src="static/ecil_icons/nn.png"></button>
+              <button type="button" id="predict" class='icon-button'><img class='icon-image' src="static/ecil_icons/nn.png"></button>
+            </p>
+            <p style="text-align: center;">
+              <button type="button" id="jaccard" class='icon-button'><img class='icon-image' src="static/ecil_icons/jaccard.png"></button>
             </p>
           </div>
         </form>
@@ -271,6 +274,37 @@
           }
       });
 
+      $("#predict").click(function() {
+        var filename = $("#img").attr("src");
+
+        if(x1 == 0 && x2 == 0 && y1 == 0 && y2 == 0) {
+          window.swal({
+            title: "Error!",
+            text: "Select an area"
+          });
+        } else {
+          window.swal({
+            title: "Predicting...",
+            text: "Please wait"
+          });
+          $.ajax({
+            url: "/predict",
+            type: "post",
+            dataType: "json",
+            data: {x1: x1, x2: x2, y1: y1, y2: y2, filename: filename},
+            success: function(result) {
+              $ias.cancelSelection();
+              swal.close();
+              window.swal({
+                icon: result.icon,
+                title: "Prediction",
+                text: "This is a " + result.prediction
+              });
+            }
+          })
+        }
+      });
+
       $("#jaccard").click(function() {
         var filename = $("#img").attr("src");
 
@@ -294,8 +328,8 @@
               swal.close();
               window.swal({
                 icon: result.icon,
-                title: "Prediction",
-                text: "This is a " + result.prediction
+                title: "Result",
+                text: result.status
               });
             }
           })

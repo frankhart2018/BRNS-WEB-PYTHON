@@ -119,37 +119,28 @@ def zeff():
 
         filename = "static/original/" + os.path.basename(filename_orig).split(".")[0] + ".npy"
 
-        res, le, he = colorize(filename, all=True)
-
         s = request.form['x1']
         t = request.form['y1']
         u = request.form['x2']
         v = request.form['y2']
 
-        le = le[int(t):int(t)+40, int(s):int(s)+40]
-        he = he[int(t):int(t)+40, int(s):int(s)+40]
-        cv2.imwrite("static/le.jpg", le)
-        cv2.imwrite("static/he.jpg", he)
+        res, le, he = colorize(filename, all=True)
+
         a = le.flatten()
         b = he.flatten()
         c = np.log(a)
         d = np.log(b)
         R = c/d
 
-        np.savetxt('R.txt', R)
         zeff = 5.7*(R**2)-7.4*R+8
-        np.savetxt('zeff.txt', zeff)
         zeff1 = np.reshape(zeff, le.shape)
-        print(zeff1.shape)
         I = res
-
-        print(s, t)
 
         w = int(s) + int(u)
         y = int(t) + int(v)
 
-        g = zeff1[int(t):int(t)+40, int(s):int(s)+40]
-        cv2.imwrite("static/" + filename_orig.split("/")[-1], g)
+        g = zeff1[int(t):int(t)+4, int(s):int(s)+4]
+
         return jsonify({'zeff': np.mean(g)})
 
 @app.route('/constrast', methods=['GET', 'POST'])
@@ -365,19 +356,19 @@ def vd():
         plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
         return jsonify({"img": im_filename, "vd": round(float(vd_val), 2)})
 
-@app.route('/save', methods=['POST'])
-def save():
+@app.route('/predict', methods=['POST'])
+def predict():
 
     if request.method == "POST":
         filename = request.form['filename']
         im = cv2.imread(filename)
         im = cv2.resize(im, (640, 512))
-        print(im.shape)
+
         s = request.form['x1']
         t = request.form['y1']
         u = request.form['x2']
         v = request.form['y2']
-        print(s, t)
+
         w = int(s) + int(u)
         y = int(t) + int(v)
 
@@ -392,3 +383,25 @@ def save():
             icon = "error"
 
         return jsonify({'icon': icon, 'prediction': prediction})
+
+@app.route('/save', methods=['POST'])
+def save():
+
+    if request.method == "POST":
+        filename = request.form['filename']
+        im = cv2.imread(filename)
+        im = cv2.resize(im, (640, 512))
+
+        s = request.form['x1']
+        t = request.form['y1']
+        u = request.form['x2']
+        v = request.form['y2']
+
+        w = int(s) + int(u)
+        y = int(t) + int(v)
+
+        g = im[int(t):int(t)+10, int(s):int(s)+10]
+        file_save_name = "static/nn/" + filename.split("/")[-1].split(".")[0] + "_" + str(time.time()) + ".jpg"
+        cv2.imwrite(file_save_name, g)
+
+        return jsonify({'icon': 'success', 'status': "Saved successfuly"})

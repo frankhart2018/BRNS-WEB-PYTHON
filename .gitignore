@@ -9,6 +9,7 @@ static/grayscale
 static/hsi
 static/im
 static/inv
+static/jaccard
 static/model
 static/nn
 static/obj

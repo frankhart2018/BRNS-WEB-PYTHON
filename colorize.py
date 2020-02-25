@@ -44,6 +44,7 @@ def colorize(im, all=False, fused=False):
 
     LE=0.5*L**3.8
     HE=0.6*H**0.2
+
     a1,(h1,v1,d1)=pywt.dwt2(LE,'haar')
     a2,(h2,v2,d2)=pywt.dwt2(HE,'haar')
 
@@ -64,8 +65,8 @@ def colorize(im, all=False, fused=False):
     H1=wiener(H,[5,5])
 
     imfused=f
-    le=LE
-    he=HE
+    le=L
+    he=H
 
     x_ax=(L1+H1)/2
 
