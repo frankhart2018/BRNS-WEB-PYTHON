@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, flash, jsonify
+from flask import Flask, request, render_template, redirect, flash, jsonify, send_from_directory
 import glob
 from werkzeug.utils import secure_filename
 import cv2
@@ -80,7 +80,7 @@ class CNN(nn.Module):
         return out
 
 model = CNN()
-model.load_state_dict(torch.load('static/model/vanilla-cnn-colored.pth'))
+model.load_state_dict(torch.load('static/model/vanilla-cnn-colored.pth', map_location=torch.device('cpu')))
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -209,6 +209,7 @@ def hsi():
         plt.axis('off')
         plt.imshow(hsi_img)
         plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
+        plt.close()
         return jsonify({"img": im_filename})
 
 @app.route('/cc', methods=['GET', 'POST'])
@@ -227,6 +228,7 @@ def cc():
         plt.axis('off')
         plt.imshow(cc_img)
         plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
+        plt.close()
         return jsonify({"img": im_filename})
 
 @app.route('/inv', methods=['GET', 'POST'])
@@ -241,6 +243,7 @@ def inv():
         plt.axis('off')
         plt.imshow(inv_img)
         plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
+        plt.close()
         return jsonify({"img": im_filename})
 
 @app.route('/obj', methods=['GET', 'POST'])
@@ -255,6 +258,7 @@ def obj():
         plt.axis('off')
         plt.imshow(obj_img)
         plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
+        plt.close()
         return jsonify({"img": im_filename})
 
 @app.route('/om', methods=['GET', 'POST'])
@@ -269,6 +273,7 @@ def om():
         plt.axis('off')
         plt.imshow(om_img)
         plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
+        plt.close()
         return jsonify({"img": im_filename})
 
 @app.route('/im', methods=['GET', 'POST'])
@@ -283,6 +288,7 @@ def im():
         plt.axis('off')
         plt.imshow(im_img)
         plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
+        plt.close()
         return jsonify({"img": im_filename})
 
 @app.route('/vcminus', methods=['GET', 'POST'])
@@ -297,6 +303,7 @@ def vcminus():
         plt.axis('off')
         plt.imshow(vcminus_img)
         plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
+        plt.close()
         return jsonify({"img": im_filename})
 
 @app.route('/vcplus', methods=['GET', 'POST'])
@@ -311,6 +318,7 @@ def vcplus():
         plt.axis('off')
         plt.imshow(vcplus_img)
         plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
+        plt.close()
         return jsonify({"img": im_filename})
 
 @app.route('/gamma', methods=['GET', 'POST'])
@@ -338,6 +346,7 @@ def ve():
         plt.axis('off')
         plt.imshow(ve_img)
         plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
+        plt.close()
         return jsonify({"img": im_filename, "ve": round(float(ve_val), 2)})
 
 @app.route('/vd', methods=['GET', 'POST'])
@@ -354,6 +363,7 @@ def vd():
         plt.axis('off')
         plt.imshow(vd_img)
         plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
+        plt.close()
         return jsonify({"img": im_filename, "vd": round(float(vd_val), 2)})
 
 @app.route('/predict', methods=['POST'])
@@ -405,3 +415,8 @@ def save():
         cv2.imwrite(file_save_name, g)
 
         return jsonify({'icon': 'success', 'status': "Saved successfuly"})
+
+@app.route('/download')
+def download():
+
+    return send_from_directory('static', 'model/vanilla-cnn-colored.pth')
