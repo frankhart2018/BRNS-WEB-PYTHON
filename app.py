@@ -4,8 +4,9 @@ from werkzeug.utils import secure_filename
 import cv2
 import numpy as np
 import os
-import matplotlib.pyplot as plt
 import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 from PIL import Image
 import time
 import torch
@@ -101,7 +102,7 @@ def index():
             brns_processing = BRNSProcessing(filename_global)
             img = brns_processing.pc_img
 
-            im_filename = "static/colorized/" + file.filename.split(".")[0] + ".jpg"
+            im_filename = "static/colorized/" + file.filename.split(".")[0] + ".png"
             matplotlib.image.imsave(im_filename, img)
             return render_template('index.html', upload=False, img=im_filename)
         else:
@@ -116,7 +117,6 @@ def zeff():
     if request.method == "POST":
 
         filename_orig = request.form['filename']
-
         filename = "static/original/" + os.path.basename(filename_orig).split(".")[0] + ".npy"
 
         s = request.form['x1']
@@ -179,7 +179,7 @@ def rgb():
         img = colorize(filename)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         filename = os.path.basename(filename)
-        im_filename = "static/colorized/" + filename.split(".")[0] + ".jpg"
+        im_filename = "static/colorized/" + filename.split(".")[0] + ".png"
         cv2.imwrite(im_filename, img)
         return jsonify({"img": im_filename})
 
@@ -193,7 +193,7 @@ def gray():
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         filename = os.path.basename(filename)
         img_gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-        im_filename = "static/grayscale/" + filename.split(".")[0] + ".jpg"
+        im_filename = "static/grayscale/" + filename.split(".")[0] + ".png"
         cv2.imwrite(im_filename, img_gray)
         return jsonify({"img": im_filename})
 
@@ -205,7 +205,7 @@ def hsi():
         filename = filename_global
         global brns_processing
         hsi_img = brns_processing.genHSIImg()
-        im_filename = "static/hsi/" + os.path.basename(filename.split(".")[0]) + ".jpg"
+        im_filename = "static/hsi/" + os.path.basename(filename.split(".")[0]) + ".png"
         plt.axis('off')
         plt.imshow(hsi_img)
         plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
@@ -220,11 +220,11 @@ def cc():
         filename = filename_global
         global brns_processing
         cc_img = brns_processing.genCCImg()
-        filename_img = "static/colorized/" + os.path.basename(filename).split(".")[0] + ".jpg"
+        filename_img = "static/colorized/" + os.path.basename(filename).split(".")[0] + ".png"
         im_real = cv2.imread(filename_img)
         shape_tuple = (im_real.shape[0], im_real.shape[1])
         cc_img = cv2.resize(cc_img, shape_tuple)
-        im_filename = "static/cc/" + os.path.basename(filename.split(".")[0]) + ".jpg"
+        im_filename = "static/cc/" + os.path.basename(filename.split(".")[0]) + ".png"
         plt.axis('off')
         plt.imshow(cc_img)
         plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
@@ -239,7 +239,7 @@ def inv():
         filename = filename_global
         global brns_processing
         inv_img = brns_processing.genInvImg()
-        im_filename = "static/inv/" + os.path.basename(filename.split(".")[0]) + ".jpg"
+        im_filename = "static/inv/" + os.path.basename(filename.split(".")[0]) + ".png"
         plt.axis('off')
         plt.imshow(inv_img)
         plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
@@ -254,7 +254,7 @@ def obj():
         filename = filename_global
         global brns_processing
         obj_img = brns_processing.genOvsBImg()
-        im_filename = "static/obj/" + os.path.basename(filename.split(".")[0]) + ".jpg"
+        im_filename = "static/obj/" + os.path.basename(filename.split(".")[0]) + ".png"
         plt.axis('off')
         plt.imshow(obj_img)
         plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
@@ -269,7 +269,7 @@ def om():
         filename = filename_global
         global brns_processing
         om_img = brns_processing.genOMImg()
-        im_filename = "static/om/" + os.path.basename(filename.split(".")[0]) + ".jpg"
+        im_filename = "static/om/" + os.path.basename(filename.split(".")[0]) + ".png"
         plt.axis('off')
         plt.imshow(om_img)
         plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
@@ -284,7 +284,7 @@ def im():
         filename = filename_global
         global brns_processing
         im_img = brns_processing.genIMImg()
-        im_filename = "static/im/" + os.path.basename(filename.split(".")[0]) + ".jpg"
+        im_filename = "static/im/" + os.path.basename(filename.split(".")[0]) + ".png"
         plt.axis('off')
         plt.imshow(im_img)
         plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
@@ -299,7 +299,7 @@ def vcminus():
         filename = filename_global
         global brns_processing
         vcminus_img = brns_processing.genVCminus()
-        im_filename = "static/vcminus/" + os.path.basename(filename.split(".")[0]) + ".jpg"
+        im_filename = "static/vcminus/" + os.path.basename(filename.split(".")[0]) + ".png"
         plt.axis('off')
         plt.imshow(vcminus_img)
         plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
@@ -314,7 +314,7 @@ def vcplus():
         filename = filename_global
         global brns_processing
         vcplus_img = brns_processing.genVCplus()
-        im_filename = "static/vcplus/" + os.path.basename(filename.split(".")[0]) + ".jpg"
+        im_filename = "static/vcplus/" + os.path.basename(filename.split(".")[0]) + ".png"
         plt.axis('off')
         plt.imshow(vcplus_img)
         plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
@@ -326,7 +326,7 @@ def gamma():
 
     if request.method == "POST":
         global filename_global
-        filename = "static/colorized/" + os.path.basename(filename_global).split(".")[0] + ".jpg"
+        filename = "static/colorized/" + os.path.basename(filename_global).split(".")[0] + ".png"
         gamma = request.form['gamma']
         savePath = gamma_correction(gamma, filename)
         return jsonify({"img": savePath, "gamma": gamma})
@@ -342,7 +342,7 @@ def ve():
         ve_val = round(float(request.form['ve']), 2)
 
         ve_img = brns_processing.genVEImg(ve_val)
-        im_filename = "static/ve/" + os.path.basename(filename.split(".")[0]) + ".jpg"
+        im_filename = "static/ve/" + os.path.basename(filename.split(".")[0]) + ".png"
         plt.axis('off')
         plt.imshow(ve_img)
         plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
@@ -359,7 +359,7 @@ def vd():
         vd_val = float(request.form['vd'])
 
         vd_img = brns_processing.genVDImg(vd_val)
-        im_filename = "static/vd/" + os.path.basename(filename.split(".")[0]) + ".jpg"
+        im_filename = "static/vd/" + os.path.basename(filename.split(".")[0]) + ".png"
         plt.axis('off')
         plt.imshow(vd_img)
         plt.savefig(im_filename, bbox_inches='tight', pad_inches=0)
@@ -411,7 +411,7 @@ def save():
         y = int(t) + int(v)
 
         g = im[int(t):int(t)+10, int(s):int(s)+10]
-        file_save_name = "static/nn/" + filename.split("/")[-1].split(".")[0] + "_" + str(time.time()) + ".jpg"
+        file_save_name = "static/nn/" + filename.split("/")[-1].split(".")[0] + "_" + str(time.time()) + ".png"
         cv2.imwrite(file_save_name, g)
 
         return jsonify({'icon': 'success', 'status': "Saved successfuly"})
@@ -420,3 +420,7 @@ def save():
 def download():
 
     return send_from_directory('static', 'model/vanilla-cnn-colored.pth')
+
+if __name__ == "__main__":
+    app.run()
+    plt.close()
