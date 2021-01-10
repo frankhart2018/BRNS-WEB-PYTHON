@@ -2,7 +2,8 @@ import os
 import urllib.request
 import progressbar
 
-files = ["cc", "colorized", "contrast", "gamma_corrected", "grayscale", "hsi", "im", "inv", "obj", "om", "original", "resize", "vcminus", "vcplus", "vd", "ve", "jaccard", "model", "nn"]
+files = ["cc", "colorized", "contrast", "gamma_corrected", "grayscale", "hsi", "im", "inv", "obj", "om", 
+         "original", "resize", "vcminus", "vcplus", "vd", "ve", "jaccard", "model", "nn"]
 
 print()
 print("Step 1) Creating intermediary files.")

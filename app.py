@@ -411,7 +411,7 @@ def save():
         y = int(t) + int(v)
 
         g = im[int(t):int(t)+10, int(s):int(s)+10]
-        file_save_name = "static/nn/" + filename.split("/")[-1].split(".")[0] + "_" + str(time.time()) + ".png"
+        file_save_name = "static/jaccard/" + filename.split("/")[-1].split(".")[0] + "_" + str(time.time()) + ".png"
         cv2.imwrite(file_save_name, g)
 
         return jsonify({'icon': 'success', 'status': "Saved successfuly"})
