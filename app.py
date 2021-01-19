@@ -175,12 +175,13 @@ def rgb():
 
     if request.method == "POST":
         global filename_global
-        filename = filename_global
-        img = colorize(filename)
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        filename = os.path.basename(filename)
-        im_filename = "static/colorized/" + filename.split(".")[0] + ".png"
-        cv2.imwrite(im_filename, img)
+        global brns_processing
+
+        brns_processing = BRNSProcessing(filename_global)
+        img = brns_processing.pc_img
+
+        im_filename = "static/colorized/" + os.path.basename(filename_global).split(".")[0] + ".png"
+        matplotlib.image.imsave(im_filename, img)
         return jsonify({"img": im_filename})
 
 @app.route('/gray', methods=['GET', 'POST'])
