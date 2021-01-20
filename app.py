@@ -119,8 +119,8 @@ def zeff():
         filename_orig = request.form['filename']
         filename = "static/original/" + os.path.basename(filename_orig).split(".")[0] + ".npy"
 
-        s = request.form['x1']
-        t = request.form['y1']
+        s = int(round(float(request.form['x1'])))
+        t = int(round(float(request.form['y1'])))
         u = request.form['x2']
         v = request.form['y2']
 
@@ -375,8 +375,8 @@ def predict():
         im = cv2.imread(filename)
         im = cv2.resize(im, (640, 512))
 
-        s = request.form['x1']
-        t = request.form['y1']
+        s = int(round(float(request.form['x1'])))
+        t = int(round(float(request.form['y1'])))
         u = request.form['x2']
         v = request.form['y2']
 
@@ -401,15 +401,14 @@ def save():
     if request.method == "POST":
         filename = request.form['filename']
         im = cv2.imread(filename)
-        im = cv2.resize(im, (640, 512))
+        print(im.shape)
 
-        s = request.form['x1']
-        t = request.form['y1']
+        s = int(round(float(request.form['x1'])))
+        t = int(round(float(request.form['y1'])))
         u = request.form['x2']
         v = request.form['y2']
 
-        w = int(s) + int(u)
-        y = int(t) + int(v)
+        print(t, s)
 
         g = im[int(t):int(t)+10, int(s):int(s)+10]
         file_save_name = "static/jaccard/" + filename.split("/")[-1].split(".")[0] + "_" + str(time.time()) + ".png"

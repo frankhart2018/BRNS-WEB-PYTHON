@@ -126,7 +126,7 @@
         <input type="submit" name="inputSubmit">
       </form>
     {% else %}
-      <div class="after-content">
+      <div class="after-content" id="container">
         <img src="{{img}}" id="img" style="width: 60%; height; 100%; float: left;">
         <form method="post" style="float: left; margin-left: 10%;">
           <!-- <p><button id="rgbtohsi" type="button">RGB to HSI</button></p> -->
@@ -224,11 +224,14 @@
       });
 
       var imagesize = $('#img').width();
-      var x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+      var x1 = 0, x2 = 0, y1 = 0, y2 = 0, height=0, width=0;
 
       $("#img").imgAreaSelect({
         handles: true,
         onSelectEnd: function(img, selection) {
+          console.log("Here");
+          height = img.height;
+          width = img.width;
           x1 = selection.x1;
           x2 = selection.x2;
           y1 = selection.y1;
@@ -253,11 +256,17 @@
               title: "Processing...",
               text: "Please wait"
             });
+
+            var height_ratio = height / 512;
+            var width_ratio = width / 640;
+            var scaled_x1 = x1 / height_ratio;
+            var scaled_y1 = y1 / width_ratio;
+
             $.ajax({
               url: "/zeff",
               type: "post",
               dataType: "json",
-              data: {x1: x1, x2: x2, y1: y1, y2: y2, filename: filename},
+              data: {x1: scaled_x1, x2: x2, y1: scaled_y1, y2: y2, filename: filename},
               success: function(result) {
                 $ias.cancelSelection();
                 swal.close();
@@ -287,11 +296,17 @@
             title: "Predicting...",
             text: "Please wait"
           });
+
+          var height_ratio = height / 512;
+          var width_ratio = width / 640;
+          var scaled_x1 = x1 / height_ratio;
+          var scaled_y1 = y1 / width_ratio;
+
           $.ajax({
             url: "/predict",
             type: "post",
             dataType: "json",
-            data: {x1: x1, x2: x2, y1: y1, y2: y2, filename: filename},
+            data: {x1: scaled_x1, x2: x2, y1: scaled_y1, y2: y2, filename: filename},
             success: function(result) {
               $ias.cancelSelection();
               swal.close();
@@ -322,11 +337,17 @@
             title: "Saving...",
             text: "Please wait"
           });
+
+          var height_ratio = height / 512;
+          var width_ratio = width / 640;
+          var scaled_x1 = x1 / height_ratio;
+          var scaled_y1 = y1 / width_ratio;
+
           $.ajax({
             url: "/save",
             type: "post",
             dataType: "json",
-            data: {x1: x1, x2: x2, y1: y1, y2: y2, filename: filename},
+            data: {x1: scaled_x1, x2: x2, y1: scaled_y1, y2: y2, filename: filename},
             success: function(result) {
               $ias.cancelSelection();
               swal.close();
