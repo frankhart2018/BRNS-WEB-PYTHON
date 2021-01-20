@@ -190,6 +190,7 @@
             </p>
             <p style="text-align: center;">
               <button type="button" id="jaccard" class='icon-button'><img class='icon-image' src="static/ecil_icons/jaccard.png"></button>
+              <button type="button" id="cosine" class='icon-button'><img class='icon-image' src="static/ecil_icons/cosine.png"></button>
             </p>
           </div>
         </form>
@@ -334,7 +335,7 @@
           });
         } else {
           window.swal({
-            title: "Saving...",
+            title: "Computing jaccard index...",
             text: "Please wait"
           });
 
@@ -345,6 +346,47 @@
 
           $.ajax({
             url: "/jaccard",
+            type: "post",
+            dataType: "json",
+            data: {x1: scaled_x1, x2: x2, y1: scaled_y1, y2: y2, filename: filename},
+            success: function(result) {
+              $ias.cancelSelection();
+              swal.close();
+              window.swal({
+                icon: result.icon,
+                title: "Result",
+                text: result.status
+              });
+              x1 = 0;
+              y1 = 0;
+              x2 = 0;
+              y2 = 0;
+            }
+          })
+        }
+      });
+
+      $("#cosine").click(function() {
+        var filename = $("#img").attr("src");
+
+        if(x1 == 0 && x2 == 0 && y1 == 0 && y2 == 0) {
+          window.swal({
+            title: "Error!",
+            text: "Select an area"
+          });
+        } else {
+          window.swal({
+            title: "Computing cosine similarity...",
+            text: "Please wait"
+          });
+
+          var height_ratio = height / 512;
+          var width_ratio = width / 640;
+          var scaled_x1 = x1 / height_ratio;
+          var scaled_y1 = y1 / width_ratio;
+
+          $.ajax({
+            url: "/cosine",
             type: "post",
             dataType: "json",
             data: {x1: scaled_x1, x2: x2, y1: scaled_y1, y2: y2, filename: filename},

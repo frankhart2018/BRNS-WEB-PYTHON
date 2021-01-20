@@ -409,7 +409,7 @@ def predict():
         return jsonify({'icon': icon, 'prediction': prediction})
 
 @app.route('/jaccard', methods=['POST'])
-def save():
+def jaccard_index():
 
     if request.method == "POST":
         filename = request.form['filename']
@@ -426,11 +426,41 @@ def save():
 
         g = g.ravel()
         
-        max_score = 0
+        max_score = -1000
         max_type = ""
         for type_, vector in jaccard_vectors.items():
             assert g.shape == vector.shape
             score = jaccard(g, vector)
+
+            if score > max_score:
+                max_score = score
+                max_type = type_
+
+        return jsonify({'icon': 'success', 'status': f"Type: {max_type}, with score: {max_score}"})
+
+@app.route('/cosine', methods=['POST'])
+def cosine_similarity():
+
+    if request.method == "POST":
+        filename = request.form['filename']
+        im = cv2.imread(filename)
+
+        s = int(round(float(request.form['x1'])))
+        t = int(round(float(request.form['y1'])))
+        u = request.form['x2']
+        v = request.form['y2']
+
+        g = im[int(t):int(t)+10, int(s):int(s)+10]
+        file_save_name = "static/cosine/" + filename.split("/")[-1].split(".")[0] + "_" + str(time.time()) + ".png"
+        cv2.imwrite(file_save_name, g)
+
+        g = g.ravel()
+        
+        max_score = -1000
+        max_type = ""
+        for type_, vector in jaccard_vectors.items():
+            assert g.shape == vector.shape
+            score = cosine(g, vector)
 
             if score > max_score:
                 max_score = score
