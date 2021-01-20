@@ -344,7 +344,7 @@
           var scaled_y1 = y1 / width_ratio;
 
           $.ajax({
-            url: "/save",
+            url: "/jaccard",
             type: "post",
             dataType: "json",
             data: {x1: scaled_x1, x2: x2, y1: scaled_y1, y2: y2, filename: filename},

@@ -16,6 +16,7 @@ import torchvision
 import torchvision.datasets as datasets
 from torch.autograd import Variable
 import torch.nn.functional as F
+from scipy.spatial.distance import jaccard, cosine
 
 from colorize import colorize
 from contrast import contrast
@@ -82,6 +83,19 @@ class CNN(nn.Module):
 
 model = CNN()
 model.load_state_dict(torch.load('static/model/vanilla-cnn-colored.pth', map_location=torch.device('cpu')))
+
+jaccard_vectors = {
+    "type_1": np.load("jaccard-vectors/type-1.npy"),
+    "type_2": np.load("jaccard-vectors/type-2.npy"),
+    "type_3": np.load("jaccard-vectors/type-3.npy"),
+    "type_4": np.load("jaccard-vectors/type-4.npy"),
+    "type_5": np.load("jaccard-vectors/type-5.npy"),
+    "type_6": np.load("jaccard-vectors/type-6.npy"),
+    "type_7": np.load("jaccard-vectors/type-7.npy"),
+    "inorganic": np.load("jaccard-vectors/inorganic.npy"),
+    "organic": np.load("jaccard-vectors/organic.npy"),
+    "metal": np.load("jaccard-vectors/metal.npy"),
+}
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -373,7 +387,6 @@ def predict():
     if request.method == "POST":
         filename = request.form['filename']
         im = cv2.imread(filename)
-        im = cv2.resize(im, (640, 512))
 
         s = int(round(float(request.form['x1'])))
         t = int(round(float(request.form['y1'])))
@@ -395,26 +408,35 @@ def predict():
 
         return jsonify({'icon': icon, 'prediction': prediction})
 
-@app.route('/save', methods=['POST'])
+@app.route('/jaccard', methods=['POST'])
 def save():
 
     if request.method == "POST":
         filename = request.form['filename']
         im = cv2.imread(filename)
-        print(im.shape)
 
         s = int(round(float(request.form['x1'])))
         t = int(round(float(request.form['y1'])))
         u = request.form['x2']
         v = request.form['y2']
 
-        print(t, s)
-
         g = im[int(t):int(t)+10, int(s):int(s)+10]
         file_save_name = "static/jaccard/" + filename.split("/")[-1].split(".")[0] + "_" + str(time.time()) + ".png"
         cv2.imwrite(file_save_name, g)
 
-        return jsonify({'icon': 'success', 'status': "Saved successfuly"})
+        g = g.ravel()
+        
+        max_score = 0
+        max_type = ""
+        for type_, vector in jaccard_vectors.items():
+            assert g.shape == vector.shape
+            score = jaccard(g, vector)
+
+            if score > max_score:
+                max_score = score
+                max_type = type_
+
+        return jsonify({'icon': 'success', 'status': f"Type: {max_type}, with score: {max_score}"})
 
 @app.route('/download')
 def download():
