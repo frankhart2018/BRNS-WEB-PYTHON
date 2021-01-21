@@ -233,53 +233,6 @@
               });
             }
 
-            function select_endpoints(operation_name) {
-              var operation_name_to_endpoint = {
-                "zeff-operation": "/zeff",
-                "nn-operation": "/predict",
-                "jaccard-operation": "/jaccard",
-                "cosine-operation": "/cosine",
-              }
-
-              var filename = $("#img").attr("src");
-
-              if(x1 == 0 && x2 == 0 && y1 == 0 && y2 == 0) {
-                window.swal({
-                  title: "Error!",
-                  text: "Select an area"
-                });
-              } else {
-                window.swal({
-                  title: "Processing...",
-                  text: "Please wait"
-                });
-
-                var height_ratio = height / 512;
-                var width_ratio = width / 640;
-                var scaled_x1 = x1 / height_ratio;
-                var scaled_y1 = y1 / width_ratio;
-
-                $.ajax({
-                  url: operation_name_to_endpoint[operation_name],
-                  type: "post",
-                  dataType: "json",
-                  data: {x1: scaled_x1, x2: x2, y1: scaled_y1, y2: y2, filename: filename},
-                  success: function(result) {
-                    $ias.cancelSelection();
-                    swal.close();
-                    window.swal({
-                      title: "Result",
-                      text: result.status
-                    });
-                    x1 = 0;
-                    x2 = 0;
-                    y1 = 0;
-                    y2 = 0;
-                  }
-                });
-              }
-            }
-
             /*
               INITIAL SETUP
             */
@@ -342,11 +295,167 @@
                 instance: true
             });
 
-            $(".operation-button").click(function() {
-              var operation_name = $(this).attr("id");
+            $("#zeff-operation").click(function() {
+              var filename = $("#img").attr("src");
 
-              if(operation_name != "#")
-                select_endpoints(operation_name);
+              if(x1 == 0 && x2 == 0 && y1 == 0 && y2 == 0) {
+                window.swal({
+                  title: "Error!",
+                  text: "Select an area"
+                });
+              } else {
+                window.swal({
+                  title: "Processing...",
+                  text: "Please wait"
+                });
+
+                var height_ratio = height / 512;
+                var width_ratio = width / 640;
+                var scaled_x1 = x1 / height_ratio;
+                var scaled_y1 = y1 / width_ratio;
+
+                $.ajax({
+                  url: "/zeff",
+                  type: "post",
+                  dataType: "json",
+                  data: {x1: scaled_x1, x2: x2, y1: scaled_y1, y2: y2, filename: filename},
+                  success: function(result) {
+                    $ias.cancelSelection();
+                    swal.close();
+                    window.swal({
+                      title: "Result (zeff)",
+                      text: "Zeff = " + result.zeff
+                    });
+                    x1 = 0;
+                    x2 = 0;
+                    y1 = 0;
+                    y2 = 0;
+                  }
+                });
+              }
+            });
+
+            $("#predict-operation").click(function() {
+              var filename = $("#img").attr("src");
+
+              if(x1 == 0 && x2 == 0 && y1 == 0 && y2 == 0) {
+                window.swal({
+                  title: "Error!",
+                  text: "Select an area"
+                });
+              } else {
+                window.swal({
+                  title: "Predicting...",
+                  text: "Please wait"
+                });
+
+                var height_ratio = height / 512;
+                var width_ratio = width / 640;
+                var scaled_x1 = x1 / height_ratio;
+                var scaled_y1 = y1 / width_ratio;
+
+                $.ajax({
+                  url: "/predict",
+                  type: "post",
+                  dataType: "json",
+                  data: {x1: scaled_x1, x2: x2, y1: scaled_y1, y2: y2, filename: filename},
+                  success: function(result) {
+                    $ias.cancelSelection();
+                    swal.close();
+                    window.swal({
+                      icon: result.icon,
+                      title: "Prediction",
+                      text: "This is a " + result.prediction
+                    });
+                    x1 = 0;
+                    y1 = 0;
+                    x2 = 0;
+                    y2 = 0;
+                  }
+                })
+              }
+            });
+
+            $("#jaccard-operation").click(function() {
+              var filename = $("#img").attr("src");
+
+              if(x1 == 0 && x2 == 0 && y1 == 0 && y2 == 0) {
+                window.swal({
+                  title: "Error!",
+                  text: "Select an area"
+                });
+              } else {
+                window.swal({
+                  title: "Computing jaccard index...",
+                  text: "Please wait"
+                });
+
+                var height_ratio = height / 512;
+                var width_ratio = width / 640;
+                var scaled_x1 = x1 / height_ratio;
+                var scaled_y1 = y1 / width_ratio;
+
+                $.ajax({
+                  url: "/jaccard",
+                  type: "post",
+                  dataType: "json",
+                  data: {x1: scaled_x1, x2: x2, y1: scaled_y1, y2: y2, filename: filename},
+                  success: function(result) {
+                    $ias.cancelSelection();
+                    swal.close();
+                    window.swal({
+                      icon: result.icon,
+                      title: "Result",
+                      text: result.status
+                    });
+                    x1 = 0;
+                    y1 = 0;
+                    x2 = 0;
+                    y2 = 0;
+                  }
+                })
+              }
+            });
+
+            $("#cosine-operation").click(function() {
+              var filename = $("#img").attr("src");
+
+              if(x1 == 0 && x2 == 0 && y1 == 0 && y2 == 0) {
+                window.swal({
+                  title: "Error!",
+                  text: "Select an area"
+                });
+              } else {
+                window.swal({
+                  title: "Computing cosine similarity...",
+                  text: "Please wait"
+                });
+
+                var height_ratio = height / 512;
+                var width_ratio = width / 640;
+                var scaled_x1 = x1 / height_ratio;
+                var scaled_y1 = y1 / width_ratio;
+
+                $.ajax({
+                  url: "/cosine",
+                  type: "post",
+                  dataType: "json",
+                  data: {x1: scaled_x1, x2: x2, y1: scaled_y1, y2: y2, filename: filename},
+                  success: function(result) {
+                    $ias.cancelSelection();
+                    swal.close();
+                    window.swal({
+                      icon: result.icon,
+                      title: "Result",
+                      text: result.status
+                    });
+                    x1 = 0;
+                    y1 = 0;
+                    x2 = 0;
+                    y2 = 0;
+                  }
+                })
+              }
             });
         });
       </script>
