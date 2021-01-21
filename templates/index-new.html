@@ -323,7 +323,7 @@
           </form>
         </div>
 
-        <div style="float: left; margin-top: -100px; margin-left: 23%;">
+        <div style="float: left; margin-top: -100px; margin-left: 18%;">
           <p>
             <div id="toggle">
               <button type="button" id="zoom" class='toggle-button'>Zoom</button>
@@ -331,6 +331,8 @@
             </div>
             <button type="button" id="gamma" class='bottom-button'>Gamma</button>
             <button type="button" id="contrast" class='bottom-button'>Contrast</button>
+            <button type="button" id="left-rotate" class='bottom-button'>Left Rotate</button>
+            <button type="button" id="right-rotate" class='bottom-button'>Right Rotate</button>
           </p>
         </div>
       {% endif %}
@@ -681,6 +683,8 @@
                   }
                 });
             });
+
+            var angle = 0;
         });
       </script>
     </body>
