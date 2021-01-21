@@ -15,7 +15,60 @@ transform_ori = transforms.Compose([transforms.RandomResizedCrop(64),   # create
                                     transforms.ToTensor(),                 # convert the image to a Tensor
                                     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])  # normalize the image
 
-def predict_function(img_name, model):
+class CNN(nn.Module):
+    def __init__(self):
+        super(CNN,self).__init__()
+
+        self.cnn1 = nn.Conv2d(in_channels=3, out_channels=8, kernel_size=3,stride=1, padding=1)
+        self.batchnorm1 = nn.BatchNorm2d(8)
+        self.relu = nn.ReLU()
+        self.maxpool1 = nn.MaxPool2d(kernel_size=2)
+
+        self.cnn2 = nn.Conv2d(in_channels=8, out_channels=32, kernel_size=5, stride=1, padding=2)
+        self.batchnorm2 = nn.BatchNorm2d(32)
+        self.maxpool2 = nn.MaxPool2d(kernel_size=2)
+
+        self.fc1 = nn.Linear(in_features=8192, out_features=4000)
+        self.droput = nn.Dropout(p=0.5)
+        self.fc2 = nn.Linear(in_features=4000, out_features=2000)
+        self.droput = nn.Dropout(p=0.5)
+        self.fc3 = nn.Linear(in_features=2000, out_features=500)
+        self.droput = nn.Dropout(p=0.5)
+        self.fc4 = nn.Linear(in_features=500, out_features=50)
+        self.droput = nn.Dropout(p=0.5)
+        self.fc5 = nn.Linear(in_features=50, out_features=2)
+
+    def forward(self,x):
+        out = self.cnn1(x)
+        out = self.batchnorm1(out)
+        out = self.relu(out)
+        out = self.maxpool1(out)
+        out = self.cnn2(out)
+        out = self.batchnorm2(out)
+        out = self.relu(out)
+        out = self.maxpool2(out)
+        out = out.view(-1,8192)
+        out = self.fc1(out)
+        out = self.relu(out)
+        out = self.droput(out)
+        out = self.fc2(out)
+        out = self.relu(out)
+        out = self.droput(out)
+        out = self.fc3(out)
+        out = self.relu(out)
+        out = self.droput(out)
+        out = self.fc4(out)
+        out = self.relu(out)
+        out = self.droput(out)
+        out = self.fc5(out)
+        return out
+
+model = CNN()
+model.load_state_dict(torch.load('static/model/vanilla-cnn-colored.pth', map_location=torch.device('cpu')))
+
+def predict_function(img_name):
+    global model
+
     image = cv2.imread(img_name)   #Read the image
     img = Image.fromarray(image)      #Convert the image to an array
     img = transform_ori(img)     #Apply the transformations

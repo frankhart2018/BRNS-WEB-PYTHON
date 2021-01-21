@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Web App - BioScan</title>
+
+        <link rel="stylesheet" type="text/css" href="static/resize/css/imgareaselect-default.css" />
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <script type="text/javascript" src="static/resize/scripts/jquery.min.js"></script>
+        <script type="text/javascript" src="static/resize/scripts/jquery.imgareaselect.pack.js"></script>
+        <script src="static/js/jquery-ui.js"></script>
+
+        <script src="static/js/sweetalert.min.js"></script>
+
+        <style type="text/css">
+
+            .mode-button {
+              border: 4px solid black;
+              border-radius: 10px;
+              width: 150px;
+              height: 100px;
+              font-size: 100%;
+              font-weight: bold;
+              background: none;
+            }
+
+            .mode-button:hover {
+              background: black;
+              color: white;
+            }
+
+            .selected {
+              background: black;
+              color: white;
+              border: 4px solid white;
+            }
+
+            .icon-button:focus {
+              outline: 0;
+            }
+
+            .icon-image {
+              width: 50px;
+              height: 50px;
+            }
+
+            #info {
+              
+            }
+
+        </style>
+    </head>
+
+    <body>
+      {% if upload %}
+        <form method="post" enctype="multipart/form-data">
+          <input type="file" name="inputFile">
+          <input type="submit" name="inputSubmit">
+        </form>
+      {% else %}
+        <div class="after-content" id="container">
+          <img src="{{img}}" id="img" style="width: 60%; height; 100%; float: left;">
+          <form method="post" style="float: left; margin-left: 10%;">
+            <!-- <p><button id="rgbtohsi" type="button">RGB to HSI</button></p> -->
+            <!-- <p><button>Overlapping</button></p> -->
+            <!-- <p><button id="contrast" type="button">Constrast stretching</button></p>
+            <p><button id="gamma" type="button">Gamma correction</button></p>
+            <p id="gamma-p" style="display: none;">
+              <input id="gamma-value" type="text" placeholder="Enter gamma value">
+              <input id="gamma-correct" type="button" value="Gamma Correct">
+            </p>
+            <p><button id="zeff" type="button">Zeff</button>&nbsp;(Click to activate/deactivate)</p>
+            <p><button type="button" id="zoomin">Zoom in</button></p>
+            <p><button type="button" id="zoomout">Zoom out</button></p>
+            <p><button type="button" id="rgb">RGB</button></p>
+            <p><button type="button" id="gray">Grayscale</button></p> -->
+            <div>
+              <p>
+                <button type="button" id="pseudo-mode" class='mode-button'>Pseudo colored</button>
+                <button type="button" id="grayscale-mode" class='mode-button'>Grayscale</button>
+              </p>
+              <p>
+                <button type="button" id="om-mode" class='mode-button'>OM</button>
+                <button type="button" id="vcplus-mode" class='mode-button'>VC+</button>
+              </p>
+              <p>
+                <div id="info">
+
+                </div>
+              </p>
+              <!--
+              <p>
+                <span id="slider2-value"></span><br>
+                <button type="button" id="vdminus" class='icon-button'><img class='icon-image' src="static/ecil_icons/VD_minus.png"></button>
+                <div id="slider1" class='slide'></div>
+                <button type="button" id="vdplus" class='icon-button' style='margin-top: -120px; margin-left: 220px;'><img class='icon-image' src="static/ecil_icons/VD_plus.png"></button>
+              </p>
+              <p style="text-align: center;">
+                <button type="button" id="pseudo" class='icon-button'><img class='icon-image' src="static/ecil_icons/Pseudo.png"></button>
+                <button type="button" id="gray" class='icon-button'><img class='icon-image' src="static/ecil_icons/BW.png"></button>
+                <button type="button" id="hsi" class='icon-button'><img class='icon-image' src="static/ecil_icons/HSI.png"></button>
+              </p>
+              <p>
+                <span id="slider3-value"></span><br>
+                <button type="button" id="gammaminus" class='icon-button'><img class='icon-image' src="static/ecil_icons/gamma_minus.png"></button>
+                <div id="slider2" class='slide'></div>
+                <button type="button" id="gammaplus" class='icon-button' style='margin-top: -120px; margin-left: 220px;'><img class='icon-image' src="static/ecil_icons/gamma_plus.png"></button>
+              </p>
+              <p style="text-align: right;">
+                <input type="number" id="gammaVal">
+                <button type="button" id="gamma" class='icon-button'><img class='icon-image' src="static/ecil_icons/gamma.png"></button>
+              </p>
+              <p style="text-align: center;">
+                <button type="button" id="contrast" class='icon-button'><img class='icon-image' src="static/ecil_icons/cstretch.png"></button>
+                <button type="button" id="zeff" class='icon-button'><img class='icon-image' src="static/ecil_icons/zeff.png"></button>
+                <button type="button" id="zoom" class='icon-button'><img class='icon-image' src="static/ecil_icons/Zoom.png"></button>
+                <button type="button" id="predict" class='icon-button'><img class='icon-image' src="static/ecil_icons/nn.png"></button>
+              </p>
+              <p style="text-align: center;">
+                <button type="button" id="jaccard" class='icon-button'><img class='icon-image' src="static/ecil_icons/jaccard.png"></button>
+                <button type="button" id="cosine" class='icon-button'><img class='icon-image' src="static/ecil_icons/cosine.png"></button>
+              </p> -->
+            </div>
+          </form>
+        </div>
+      {% endif %}
+
+      <script type="text/javascript">
+      /*
+        FUNCTIONS
+      */
+      function mode_request(mode_name, show_please_wait=false) {
+          $(".selected").removeClass("selected");
+          $("#" + mode_name).addClass("selected");
+
+          var id_to_endpoint = {
+            "pseudo-mode": "/rgb",
+            "grayscale-mode": "/gray",
+            "om-mode": "/om",
+            "vcplus-mode": "/vcplus"
+          }
+
+          if(show_please_wait) {
+            swal({
+              title: "Processing...",
+              text: "Please wait"
+            });
+          }
+
+          $.ajax({
+            url: id_to_endpoint[mode_name],
+            type: "post",
+            dataType: "json",
+            data: {"saveMode": true},
+            success: function(result) {
+              if(show_please_wait)
+                swal.close();
+              $("#img").attr("src", result.img);
+            }
+          });
+        }
+
+        /*
+          INITIAL SETUP
+        */
+        var mode_name = "{{mode}}"
+        $("#" + mode_name).addClass("selected");
+
+        if(mode_name != "pseudo-mode") {
+          mode_request(mode_name);
+        }
+
+        $(document).ready(function() {
+          /*
+            LOGIC
+          */
+          $(".mode-button").click(function() {
+            var mode_name = $(this).attr("id");
+
+            if(!$(this).hasClass("selected")) {
+              mode_request(mode_name, show_please_wait=true);
+            } else {
+              var id_to_name = {
+                "pseudo-mode": "Pseuo colored",
+                "grayscale-mode": "Grayscale",
+                "om-mode": "OM",
+                "vcplus-mode": "VC Plus"
+              }
+
+              window.swal({
+                icon: "info",
+                title: "You clicked",
+                text: "Mode: " + id_to_name[mode_name] + " already selected!",
+              });
+            }
+          });
+        });
+      </script>
+    </body>
+</html>

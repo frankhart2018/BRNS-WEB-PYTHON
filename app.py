@@ -5,17 +5,10 @@ import cv2
 import numpy as np
 import os
 import matplotlib
+import time
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from PIL import Image
-import time
-import torch
-import torch.nn as nn
-import torchvision.transforms as transforms
-import torchvision
-import torchvision.datasets as datasets
-from torch.autograd import Variable
-import torch.nn.functional as F
 from scipy.spatial.distance import jaccard, cosine
 
 from colorize import colorize
@@ -23,6 +16,7 @@ from contrast import contrast
 from gamma import gamma_correction
 from brns_processing import BRNSProcessing
 from predict import predict_function
+from db import get_connection, update_mode
 
 app = Flask(__name__)
 
@@ -32,57 +26,6 @@ app.config['SESSION_TYPE'] = 'filesystem'
 
 filename_global = ""
 brns_processing = ""
-
-class CNN(nn.Module):
-    def __init__(self):
-        super(CNN,self).__init__()
-
-        self.cnn1 = nn.Conv2d(in_channels=3, out_channels=8, kernel_size=3,stride=1, padding=1)
-        self.batchnorm1 = nn.BatchNorm2d(8)
-        self.relu = nn.ReLU()
-        self.maxpool1 = nn.MaxPool2d(kernel_size=2)
-
-        self.cnn2 = nn.Conv2d(in_channels=8, out_channels=32, kernel_size=5, stride=1, padding=2)
-        self.batchnorm2 = nn.BatchNorm2d(32)
-        self.maxpool2 = nn.MaxPool2d(kernel_size=2)
-
-        self.fc1 = nn.Linear(in_features=8192, out_features=4000)
-        self.droput = nn.Dropout(p=0.5)
-        self.fc2 = nn.Linear(in_features=4000, out_features=2000)
-        self.droput = nn.Dropout(p=0.5)
-        self.fc3 = nn.Linear(in_features=2000, out_features=500)
-        self.droput = nn.Dropout(p=0.5)
-        self.fc4 = nn.Linear(in_features=500, out_features=50)
-        self.droput = nn.Dropout(p=0.5)
-        self.fc5 = nn.Linear(in_features=50, out_features=2)
-
-    def forward(self,x):
-        out = self.cnn1(x)
-        out = self.batchnorm1(out)
-        out = self.relu(out)
-        out = self.maxpool1(out)
-        out = self.cnn2(out)
-        out = self.batchnorm2(out)
-        out = self.relu(out)
-        out = self.maxpool2(out)
-        out = out.view(-1,8192)
-        out = self.fc1(out)
-        out = self.relu(out)
-        out = self.droput(out)
-        out = self.fc2(out)
-        out = self.relu(out)
-        out = self.droput(out)
-        out = self.fc3(out)
-        out = self.relu(out)
-        out = self.droput(out)
-        out = self.fc4(out)
-        out = self.relu(out)
-        out = self.droput(out)
-        out = self.fc5(out)
-        return out
-
-model = CNN()
-model.load_state_dict(torch.load('static/model/vanilla-cnn-colored.pth', map_location=torch.device('cpu')))
 
 jaccard_vectors = {
     "type_1": np.load("jaccard-vectors/type-1.npy"),
@@ -99,6 +42,40 @@ jaccard_vectors = {
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+
+    if "inputSubmit" in request.form:
+
+        if "inputFile" in request.files:
+            file = request.files['inputFile']
+            file_name = secure_filename(file.filename)
+            filename = "static/original/" + file_name
+            file.save(filename)
+            np_data = np.loadtxt(filename, dtype=int)
+            filename = "static/original/" + file_name.split(".")[0] + ".npy"
+            np.save(filename, np_data)
+            global filename_global
+            filename_global = filename
+            global brns_processing
+            brns_processing = BRNSProcessing(filename_global)
+            img = brns_processing.pc_img
+
+            im_filename = "static/colorized/" + file.filename.split(".")[0] + ".png"
+            matplotlib.image.imsave(im_filename, img)
+
+            conn = get_connection()
+            cursor = conn.execute("SELECT * FROM mode")
+            mode = list(cursor)[0][1]
+            conn.close()
+
+            return render_template('index-new.html', upload=False, img=im_filename, mode=mode)
+        else:
+            flash("No image selected")
+            return render_template('index-new.html', upload=True)
+
+    return render_template('index-new.html', upload=True)
+
+@app.route('/old', methods=['GET', 'POST'])
+def index_old():
 
     if "inputSubmit" in request.form:
 
@@ -188,6 +165,12 @@ def rgbtohsi():
 def rgb():
 
     if request.method == "POST":
+        if "saveMode" in request.form:
+            save_mode = request.form['saveMode']
+
+            if save_mode == "true":
+                update_mode("pseudo-mode")
+
         global filename_global
         global brns_processing
 
@@ -202,6 +185,12 @@ def rgb():
 def gray():
 
     if request.method == "POST":
+        if "saveMode" in request.form:
+            save_mode = request.form['saveMode']
+
+            if save_mode == "true":
+                update_mode("grayscale-mode")
+
         global filename_global
         filename = filename_global
         img = colorize(filename)
@@ -280,6 +269,12 @@ def obj():
 def om():
 
     if request.method == "POST":
+        if "saveMode" in request.form:
+            save_mode = request.form['saveMode']
+
+            if save_mode == "true":
+                update_mode("om-mode")
+
         global filename_global
         filename = filename_global
         global brns_processing
@@ -325,6 +320,12 @@ def vcminus():
 def vcplus():
 
     if request.method == "POST":
+        if "saveMode" in request.form:
+            save_mode = request.form['saveMode']
+
+            if save_mode == "true":
+                update_mode("vcplus-mode")
+
         global filename_global
         filename = filename_global
         global brns_processing
@@ -400,7 +401,7 @@ def predict():
         file_save_name = "static/nn/" + filename.split("/")[-1].split(".")[0] + "_" + str(time.time()) + ".jpg"
         cv2.imwrite(file_save_name, g)
 
-        prediction = predict_function(file_save_name, model)
+        prediction = predict_function(file_save_name)
         icon = "success"
 
         if(prediction == "Explosive"):
@@ -425,7 +426,7 @@ def jaccard_index():
         cv2.imwrite(file_save_name, g)
 
         g = g.ravel()
-        
+
         max_score = -1000
         max_type = ""
         for type_, vector in jaccard_vectors.items():
@@ -455,7 +456,7 @@ def cosine_similarity():
         cv2.imwrite(file_save_name, g)
 
         g = g.ravel()
-        
+
         max_score = -1000
         max_type = ""
         for type_, vector in jaccard_vectors.items():
