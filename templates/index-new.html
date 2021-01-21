@@ -281,7 +281,6 @@
             $("#img").imgAreaSelect({
               handles: true,
               onSelectEnd: function(img, selection) {
-                console.log("Here");
                 height = img.height;
                 width = img.width;
                 x1 = selection.x1;
@@ -335,7 +334,7 @@
               }
             });
 
-            $("#predict-operation").click(function() {
+            $("#nn-operation").click(function() {
               var filename = $("#img").attr("src");
 
               if(x1 == 0 && x2 == 0 && y1 == 0 && y2 == 0) {
