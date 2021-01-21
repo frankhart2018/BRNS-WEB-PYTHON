@@ -667,6 +667,20 @@
                 }
               });
             });
+
+            $("#contrast").click(function() {
+                var filename = $("#img").attr('src');
+
+                $.ajax({
+                  url: "/constrast",
+                  type: "post",
+                  dataType: "json",
+                  data: {filename: filename},
+                  success: function(result) {
+                    $("#img").attr('src', result.img);
+                  }
+                });
+            });
         });
       </script>
     </body>
