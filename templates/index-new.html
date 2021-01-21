@@ -93,6 +93,16 @@
               justify-content: center;
             }
 
+            #manual-search {
+              width: 100px;
+              word-wrap: break-word;
+              background: white;
+              border: 4px solid black;
+              border-radius: 10px;
+              font-weight: bold;
+              font-size: 100%;
+            }
+
         </style>
     </head>
 
@@ -124,10 +134,12 @@
                 <button type="button" id="pseudo-mode" class='mode-button'>Pseudo colored</button>
                 <button type="button" id="grayscale-mode" class='mode-button'>Grayscale</button>
               </p>
+
               <p>
                 <button type="button" id="om-mode" class='mode-button'>OM</button>
                 <button type="button" id="vcplus-mode" class='mode-button'>VC+</button>
               </p>
+
               <p>
                 <div class="box">
                   <strong>Scan number:</strong> {{updated_count}} <br><br>
@@ -136,6 +148,7 @@
                   <strong>Image Status:</strong> <br><br>
                 </div>
               </p>
+
               <h3>View Options</h3>
               <div class="box" style="margin-top: -15px;">
                 <div>
@@ -146,7 +159,6 @@
                     <button type="button" id="vcminus-option" class='option-button'>VC-</button>
                   </div>
                 </div>
-                <br>
                 <div>
                   <div id="options-box">
                     <button type="button" id="cc-option" class='option-button'>CC</button>
@@ -165,14 +177,12 @@
                     <button type="button" id="#" class='operation-button'>Francais</button>
                   </div>
                 </div>
-                <br>
                 <div>
                   <div id="options-box">
                     <button type="button" id="zeff-operation" class='operation-button'>Zeff</button>
                     <button type="button" id="nn-operation" class='operation-button'>NN</button>
                   </div>
                 </div>
-                <br>
                 <div>
                   <div id="options-box">
                     <button type="button" id="jaccard-operation" class='operation-button'>Jaccard</button>
@@ -180,6 +190,13 @@
                   </div>
                 </div>
               </div>
+
+              <p>
+                <button type="button" id="manual-search">Manual Search</button>
+                <button type="button" id="grayscale-mode" class='#'><img class='icon-image' src="static/ecil_icons/previous.png"></button>
+                <button type="button" id="pseudo-mode" class='#'><img class='icon-image' src="static/ecil_icons/stop.png"></button>
+                <button type="button" id="grayscale-mode" class='#'><img class='icon-image' src="static/ecil_icons/next.png"></button>
+              </p>
             </div>
           </form>
         </div>
