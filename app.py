@@ -16,7 +16,7 @@ from contrast import contrast
 from gamma import gamma_correction
 from brns_processing import BRNSProcessing
 from predict import predict_function
-from db import get_connection, update_mode
+from db import get_connection, update_mode, update_scan_count
 
 app = Flask(__name__)
 
@@ -67,7 +67,9 @@ def index():
             mode = list(cursor)[0][1]
             conn.close()
 
-            return render_template('index-new.html', upload=False, img=im_filename, mode=mode)
+            updated_count = update_scan_count()
+
+            return render_template('index-new.html', upload=False, img=im_filename, mode=mode, updated_count=updated_count)
         else:
             flash("No image selected")
             return render_template('index-new.html', upload=True)

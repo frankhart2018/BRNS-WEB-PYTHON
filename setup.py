@@ -56,6 +56,16 @@ conn.execute("""
 conn.execute("INSERT INTO mode(id, current_mode) VALUES(1, 'pseudo-mode')")
 conn.commit()
 
+conn.execute("""
+    CREATE TABLE count(
+        id INT PRIMARY KEY,
+        cnt INT NOT NULL
+    )
+""")
+
+conn.execute("INSERT INTO count(id, cnt) VALUES(1, 0)")
+conn.commit()
+
 conn.close()
 
 print("Step 3 completed.")

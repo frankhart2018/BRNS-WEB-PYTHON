@@ -43,8 +43,37 @@
               height: 50px;
             }
 
-            #info {
-              
+            .box {
+              width: 80%;
+              padding: 20px;
+              border: 4px solid black;
+              border-radius: 10px;
+              vertical-align: center;
+              font-size: 100%;
+            }
+
+            .option-button {
+              border: 4px solid black;
+              border-radius: 10px;
+              width: 60px;
+              /* height: 50px; */
+              font-size: 90%;
+              font-weight: bold;
+              background: none;
+              margin-left: 2px;
+              margin-right: 2px;
+              word-wrap: break-word;
+            }
+
+            .option-button:hover {
+              background: black;
+              color: white;
+            }
+
+            #options-box {
+              display: flex;
+              align-items: center;
+              justify-content: center;
             }
 
         </style>
@@ -83,17 +112,34 @@
                 <button type="button" id="vcplus-mode" class='mode-button'>VC+</button>
               </p>
               <p>
-                <div id="info">
-
+                <div class="box">
+                  <strong>Scan number:</strong> {{updated_count}} <br><br>
+                  <strong>Scan mode:</strong> {{mode}} <br><br>
+                  <strong>System status:</strong> <br><br>
+                  <strong>Image Status:</strong> <br><br>
                 </div>
               </p>
+              <h3>View Options</h3>
+              <div class="box" style="margin-top: -15px;">
+                <div>
+                  <div id="options-box">
+                    <button type="button" id="pseudo-option" class='option-button'>Color</button>
+                    <button type="button" id="om-option" class='option-button'>OM</button>
+                    <button type="button" id="im-option" class='option-button'>IM</button>
+                    <button type="button" id="vcminus-option" class='option-button'>VC-</button>
+                  </div>
+                </div>
+                <br>
+                <div>
+                  <div id="options-box">
+                    <button type="button" id="cc-option" class='option-button'>CC</button>
+                    <button type="button" id="obj-option" class='option-button'>OBJ</button>
+                    <button type="button" id="bw-option" class='option-button'>Gray</button>
+                    <button type="button" id="inv-option" class='option-button'>Inv</button>
+                  </div>
+                </div>
+              </div>
               <!--
-              <p>
-                <span id="slider2-value"></span><br>
-                <button type="button" id="vdminus" class='icon-button'><img class='icon-image' src="static/ecil_icons/VD_minus.png"></button>
-                <div id="slider1" class='slide'></div>
-                <button type="button" id="vdplus" class='icon-button' style='margin-top: -120px; margin-left: 220px;'><img class='icon-image' src="static/ecil_icons/VD_plus.png"></button>
-              </p>
               <p style="text-align: center;">
                 <button type="button" id="pseudo" class='icon-button'><img class='icon-image' src="static/ecil_icons/Pseudo.png"></button>
                 <button type="button" id="gray" class='icon-button'><img class='icon-image' src="static/ecil_icons/BW.png"></button>
@@ -125,74 +171,91 @@
       {% endif %}
 
       <script type="text/javascript">
-      /*
-        FUNCTIONS
-      */
-      function mode_request(mode_name, show_please_wait=false) {
-          $(".selected").removeClass("selected");
-          $("#" + mode_name).addClass("selected");
-
-          var id_to_endpoint = {
-            "pseudo-mode": "/rgb",
-            "grayscale-mode": "/gray",
-            "om-mode": "/om",
-            "vcplus-mode": "/vcplus"
-          }
-
-          if(show_please_wait) {
-            swal({
-              title: "Processing...",
-              text: "Please wait"
-            });
-          }
-
-          $.ajax({
-            url: id_to_endpoint[mode_name],
-            type: "post",
-            dataType: "json",
-            data: {"saveMode": true},
-            success: function(result) {
-              if(show_please_wait)
-                swal.close();
-              $("#img").attr("src", result.img);
-            }
-          });
-        }
-
-        /*
-          INITIAL SETUP
-        */
-        var mode_name = "{{mode}}"
-        $("#" + mode_name).addClass("selected");
-
-        if(mode_name != "pseudo-mode") {
-          mode_request(mode_name);
-        }
-
         $(document).ready(function() {
-          /*
-            LOGIC
-          */
-          $(".mode-button").click(function() {
-            var mode_name = $(this).attr("id");
+            /*
+              FUNCTIONS
+            */
+            function mode_request(mode_name, show_please_wait=false, send_data=false) {
+              var id_to_endpoint = {
+                // Modes
+                "pseudo-mode": "/rgb",
+                "grayscale-mode": "/gray",
+                "om-mode": "/om",
+                "vcplus-mode": "/vcplus",
 
-            if(!$(this).hasClass("selected")) {
-              mode_request(mode_name, show_please_wait=true);
-            } else {
-              var id_to_name = {
-                "pseudo-mode": "Pseuo colored",
-                "grayscale-mode": "Grayscale",
-                "om-mode": "OM",
-                "vcplus-mode": "VC Plus"
+                // Options
+                "psuedo-option": "/rgb",
+                "om-option": "/om",
+                "im-option": "/im",
+                "vcminus-option": "/vcminus",
+                "cc-option": "/cc",
+                "obj-option": "/obj",
+                "bw-option": "/bw",
+                "inv-option": "/inv",
               }
 
-              window.swal({
-                icon: "info",
-                title: "You clicked",
-                text: "Mode: " + id_to_name[mode_name] + " already selected!",
+              if(show_please_wait) {
+                swal({
+                  title: "Processing...",
+                  text: "Please wait"
+                });
+              }
+
+              var data = {}
+              if(send_data)
+                var data = {"saveMode": true}
+
+              $.ajax({
+                url: id_to_endpoint[mode_name],
+                type: "post",
+                dataType: "json",
+                data: data,
+                success: function(result) {
+                  if(show_please_wait)
+                    swal.close();
+                  $("#img").attr("src", result.img);
+                }
               });
             }
-          });
+
+            /*
+              INITIAL SETUP
+            */
+            var mode_name = "{{mode}}";
+            $("#" + mode_name).addClass("selected");
+
+            if(mode_name != "pseudo-mode") {
+              mode_request(mode_name);
+            }
+
+            /*
+              LOGIC
+            */
+            $(".mode-button").click(function() {
+              var mode_name = $(this).attr("id");
+
+              if(!$(this).hasClass("selected")) {
+                mode_request(mode_name, show_please_wait=true, send_data=true);
+              } else {
+                var id_to_name = {
+                  "pseudo-mode": "Pseuo colored",
+                  "grayscale-mode": "Grayscale",
+                  "om-mode": "OM",
+                  "vcplus-mode": "VC Plus"
+                }
+
+                window.swal({
+                  icon: "info",
+                  title: "You clicked",
+                  text: "Mode: " + id_to_name[mode_name] + " already selected!",
+                });
+              }
+
+              $(".selected").removeClass("selected");
+              $(this).addClass("selected");
+            });
+
+            
         });
       </script>
     </body>
