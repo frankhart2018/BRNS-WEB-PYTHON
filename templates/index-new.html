@@ -56,7 +56,6 @@
               border: 4px solid black;
               border-radius: 10px;
               width: 60px;
-              /* height: 50px; */
               font-size: 90%;
               font-weight: bold;
               background: none;
@@ -66,6 +65,24 @@
             }
 
             .option-button:hover {
+              background: black;
+              color: white;
+            }
+
+            .operation-button {
+              border: 4px solid black;
+              border-radius: 10px;
+              width: 90px;
+              padding: 10px;
+              font-size: 90%;
+              font-weight: bold;
+              background: none;
+              margin-left: 2px;
+              margin-right: 2px;
+              word-wrap: break-word;
+            }
+
+            .operation-button:hover {
               background: black;
               color: white;
             }
@@ -139,32 +156,30 @@
                   </div>
                 </div>
               </div>
-              <!--
-              <p style="text-align: center;">
-                <button type="button" id="pseudo" class='icon-button'><img class='icon-image' src="static/ecil_icons/Pseudo.png"></button>
-                <button type="button" id="gray" class='icon-button'><img class='icon-image' src="static/ecil_icons/BW.png"></button>
-                <button type="button" id="hsi" class='icon-button'><img class='icon-image' src="static/ecil_icons/HSI.png"></button>
-              </p>
-              <p>
-                <span id="slider3-value"></span><br>
-                <button type="button" id="gammaminus" class='icon-button'><img class='icon-image' src="static/ecil_icons/gamma_minus.png"></button>
-                <div id="slider2" class='slide'></div>
-                <button type="button" id="gammaplus" class='icon-button' style='margin-top: -120px; margin-left: 220px;'><img class='icon-image' src="static/ecil_icons/gamma_plus.png"></button>
-              </p>
-              <p style="text-align: right;">
-                <input type="number" id="gammaVal">
-                <button type="button" id="gamma" class='icon-button'><img class='icon-image' src="static/ecil_icons/gamma.png"></button>
-              </p>
-              <p style="text-align: center;">
-                <button type="button" id="contrast" class='icon-button'><img class='icon-image' src="static/ecil_icons/cstretch.png"></button>
-                <button type="button" id="zeff" class='icon-button'><img class='icon-image' src="static/ecil_icons/zeff.png"></button>
-                <button type="button" id="zoom" class='icon-button'><img class='icon-image' src="static/ecil_icons/Zoom.png"></button>
-                <button type="button" id="predict" class='icon-button'><img class='icon-image' src="static/ecil_icons/nn.png"></button>
-              </p>
-              <p style="text-align: center;">
-                <button type="button" id="jaccard" class='icon-button'><img class='icon-image' src="static/ecil_icons/jaccard.png"></button>
-                <button type="button" id="cosine" class='icon-button'><img class='icon-image' src="static/ecil_icons/cosine.png"></button>
-              </p> -->
+
+              <h3>Operation</h3>
+              <div class="box" style="margin-top: -15px;">
+                <div>
+                  <div id="options-box">
+                    <button type="button" id="#" class='operation-button'>Send</button>
+                    <button type="button" id="#" class='operation-button'>Francais</button>
+                  </div>
+                </div>
+                <br>
+                <div>
+                  <div id="options-box">
+                    <button type="button" id="zeff-operation" class='operation-button'>Zeff</button>
+                    <button type="button" id="nn-operation" class='operation-button'>NN</button>
+                  </div>
+                </div>
+                <br>
+                <div>
+                  <div id="options-box">
+                    <button type="button" id="jaccard-operation" class='operation-button'>Jaccard</button>
+                    <button type="button" id="cosine-operation" class='operation-button'>Cosine</button>
+                  </div>
+                </div>
+              </div>
             </div>
           </form>
         </div>
@@ -184,13 +199,13 @@
                 "vcplus-mode": "/vcplus",
 
                 // Options
-                "psuedo-option": "/rgb",
+                "pseudo-option": "/rgb",
                 "om-option": "/om",
                 "im-option": "/im",
                 "vcminus-option": "/vcminus",
                 "cc-option": "/cc",
                 "obj-option": "/obj",
-                "bw-option": "/bw",
+                "bw-option": "/gray",
                 "inv-option": "/inv",
               }
 
@@ -216,6 +231,53 @@
                   $("#img").attr("src", result.img);
                 }
               });
+            }
+
+            function select_endpoints(operation_name) {
+              var operation_name_to_endpoint = {
+                "zeff-operation": "/zeff",
+                "nn-operation": "/predict",
+                "jaccard-operation": "/jaccard",
+                "cosine-operation": "/cosine",
+              }
+
+              var filename = $("#img").attr("src");
+
+              if(x1 == 0 && x2 == 0 && y1 == 0 && y2 == 0) {
+                window.swal({
+                  title: "Error!",
+                  text: "Select an area"
+                });
+              } else {
+                window.swal({
+                  title: "Processing...",
+                  text: "Please wait"
+                });
+
+                var height_ratio = height / 512;
+                var width_ratio = width / 640;
+                var scaled_x1 = x1 / height_ratio;
+                var scaled_y1 = y1 / width_ratio;
+
+                $.ajax({
+                  url: operation_name_to_endpoint[operation_name],
+                  type: "post",
+                  dataType: "json",
+                  data: {x1: scaled_x1, x2: x2, y1: scaled_y1, y2: y2, filename: filename},
+                  success: function(result) {
+                    $ias.cancelSelection();
+                    swal.close();
+                    window.swal({
+                      title: "Result",
+                      text: result.status
+                    });
+                    x1 = 0;
+                    x2 = 0;
+                    y1 = 0;
+                    y2 = 0;
+                  }
+                });
+              }
             }
 
             /*
@@ -255,7 +317,37 @@
               $(this).addClass("selected");
             });
 
-            
+            $(".option-button").click(function() {
+              var option_name = $(this).attr("id");
+              mode_request(option_name, show_please_wait=true);
+            });
+
+            var imagesize = $('#img').width();
+            var x1 = 0, x2 = 0, y1 = 0, y2 = 0, height=0, width=0;
+
+            $("#img").imgAreaSelect({
+              handles: true,
+              onSelectEnd: function(img, selection) {
+                console.log("Here");
+                height = img.height;
+                width = img.width;
+                x1 = selection.x1;
+                x2 = selection.x2;
+                y1 = selection.y1;
+                y2 = selection.y2;
+              }
+            });
+
+            var $ias = $('#img').imgAreaSelect({
+                instance: true
+            });
+
+            $(".operation-button").click(function() {
+              var operation_name = $(this).attr("id");
+
+              if(operation_name != "#")
+                select_endpoints(operation_name);
+            });
         });
       </script>
     </body>
