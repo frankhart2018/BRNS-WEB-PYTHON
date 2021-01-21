@@ -355,14 +355,14 @@ def gamma():
         return jsonify({"img": savePath, "gamma": gamma})
 
 @app.route('/gamma-update', methods=['GET', 'POST'])
-def gamma():
+def gamma_update():
 
     if request.method == "POST":
         global filename_global
         global gamma
         filename = "static/colorized/" + os.path.basename(filename_global).split(".")[0] + ".png"
-        gamma = gamma + 1
         savePath = gamma_correction(gamma, filename)
+        gamma = gamma + 0.1
         return jsonify({"img": savePath, "gamma": gamma})
 
 @app.route('/ve', methods=['GET', 'POST'])

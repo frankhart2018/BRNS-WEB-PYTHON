@@ -656,6 +656,17 @@
 
               zoomed = false;
             });
+
+            $("#gamma").click(function() {
+              $.ajax({
+                url: "/gamma-update",
+                type: "post",
+                dataType: "json",
+                success: function(result) {
+                  $("#img").attr('src', result.img);
+                }
+              });
+            });
         });
       </script>
     </body>
