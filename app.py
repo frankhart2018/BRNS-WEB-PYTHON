@@ -40,6 +40,8 @@ jaccard_vectors = {
     "metal": np.load("jaccard-vectors/metal.npy"),
 }
 
+gamma = 0.1
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
 
@@ -68,6 +70,9 @@ def index():
             conn.close()
 
             updated_count = update_scan_count()
+
+            global gamma
+            gamma = 0.1
 
             return render_template('index-new.html', upload=False, img=im_filename, mode=mode, updated_count=updated_count)
         else:
@@ -346,6 +351,17 @@ def gamma():
         global filename_global
         filename = "static/colorized/" + os.path.basename(filename_global).split(".")[0] + ".png"
         gamma = request.form['gamma']
+        savePath = gamma_correction(gamma, filename)
+        return jsonify({"img": savePath, "gamma": gamma})
+
+@app.route('/gamma-update', methods=['GET', 'POST'])
+def gamma():
+
+    if request.method == "POST":
+        global filename_global
+        global gamma
+        filename = "static/colorized/" + os.path.basename(filename_global).split(".")[0] + ".png"
+        gamma = gamma + 1
         savePath = gamma_correction(gamma, filename)
         return jsonify({"img": savePath, "gamma": gamma})
 
