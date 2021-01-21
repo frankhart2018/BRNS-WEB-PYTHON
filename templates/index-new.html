@@ -120,6 +120,8 @@
           <input type="submit" name="inputSubmit">
         </form>
       {% else %}
+        <audio id="warning" src="static/alarm/warning.mp3"></audio>
+
         <div class="after-content" id="container">
           <img src="{{img}}" id="img" style="width: 60%; height; 100%; float: left;">
           <form method="post" style="float: left; margin-left: 10%;">
@@ -241,6 +243,18 @@
                   $("#img").attr("src", result.img);
                 }
               });
+            }
+
+            function play_warning_audio() {
+              var audio = document.getElementById("warning");
+              audio.currentTime = 0;
+              audio.play();
+              audio.loop = true;
+            }
+
+            function stop_warning_audio() {
+              var audio = document.getElementById("warning");
+              audio.pause();
             }
 
             /*
@@ -369,12 +383,18 @@
                   dataType: "json",
                   data: {x1: scaled_x1, x2: x2, y1: scaled_y1, y2: y2, filename: filename},
                   success: function(result) {
+                    if(result.icon == "error") {
+                      play_warning_audio();
+                    }
+
                     $ias.cancelSelection();
                     swal.close();
                     window.swal({
                       icon: result.icon,
                       title: "Prediction",
                       text: "This is a " + result.prediction
+                    }).then(function() {
+                      stop_warning_audio();
                     });
                     x1 = 0;
                     y1 = 0;
