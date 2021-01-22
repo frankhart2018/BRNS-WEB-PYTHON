@@ -30,12 +30,12 @@ def show_progress(block_num, block_size, total_size):
         pbar.finish()
         pbar = None
 
-# print()
-# print("Step 2) Downloading neural network trained model.")
-# url = "http://jncpasighat.edu.in/file/vanilla-cnn-colored.pth"
-# urllib.request.urlretrieve(url, os.path.join(os.getcwd(), 'static/model/vanilla-cnn-colored.pth'), show_progress)
-#
-# print("Step 2 completed.")
+print()
+print("Step 2) Downloading neural network trained model.")
+url = "http://jncpasighat.edu.in/file/vanilla-cnn-colored.pth"
+urllib.request.urlretrieve(url, os.path.join(os.getcwd(), 'static/model/vanilla-cnn-colored.pth'), show_progress)
+
+print("Step 2 completed.")
 
 print()
 print("Step 3) Setting up DB.")

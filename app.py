@@ -35,9 +35,9 @@ jaccard_vectors = {
     "type_5": np.load("jaccard-vectors/type-5.npy"),
     "type_6": np.load("jaccard-vectors/type-6.npy"),
     "type_7": np.load("jaccard-vectors/type-7.npy"),
-    "inorganic": np.load("jaccard-vectors/inorganic.npy"),
+    # "inorganic": np.load("jaccard-vectors/inorganic.npy"),
     "organic": np.load("jaccard-vectors/organic.npy"),
-    "metal": np.load("jaccard-vectors/metal.npy"),
+    # "metal": np.load("jaccard-vectors/metal.npy"),
 }
 
 gamma = 0.1
@@ -455,7 +455,8 @@ def jaccard_index():
                 max_score = score
                 max_type = type_
 
-        return jsonify({'icon': 'success', 'status': f"Type: {max_type}, with score: {max_score}"})
+        return jsonify({'icon': 'success', 'status': f"Type: {max_type}, with score: {max_score}",
+                        'max_type': max_type})
 
 @app.route('/cosine', methods=['POST'])
 def cosine_similarity():
@@ -485,7 +486,8 @@ def cosine_similarity():
                 max_score = score
                 max_type = type_
 
-        return jsonify({'icon': 'success', 'status': f"Type: {max_type}, with score: {max_score}"})
+        return jsonify({'icon': 'success', 'status': f"Type: {max_type}, with score: {max_score}",
+                        'max_type': max_type})
 
 @app.route('/download')
 def download():

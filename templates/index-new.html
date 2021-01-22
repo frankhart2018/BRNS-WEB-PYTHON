@@ -250,7 +250,10 @@
         <audio id="warning" src="static/alarm/warning.mp3"></audio>
 
         <div class="after-content" id="container">
-          <img src="{{img}}" id="img" style="width: 60%; height; 70%; float: left;">
+          <div style="width: 60%; height: 70%; float: left; overflow: hidden;">
+            <img src="{{img}}" id="img" style="width: 90%; height: 90%; float: left;">
+          </div>
+
           <form method="post" style="float: left; margin-left: 10%;">
             <div>
               <p>
@@ -323,7 +326,7 @@
           </form>
         </div>
 
-        <div style="float: left; margin-top: -100px; margin-left: 18%;">
+        <div style="float: left; margin-top: -280px; margin-left: 18%;">
           <p>
             <div id="toggle">
               <button type="button" id="zoom" class='toggle-button'>Zoom</button>
@@ -578,12 +581,22 @@
                   dataType: "json",
                   data: {x1: scaled_x1, x2: x2, y1: scaled_y1, y2: y2, filename: filename},
                   success: function(result) {
+                    var playing_alarm_sound = false;
+                    if(result.max_type != "organic" && result.max_type != "") {
+                      play_warning_audio();
+                      playing_alarm_sound = true;
+                    }
+
                     $ias.cancelSelection();
                     swal.close();
                     window.swal({
                       icon: result.icon,
                       title: "Result",
                       text: result.status
+                    }).then(function() {
+                      if(playing_alarm_sound) {
+                        stop_warning_audio();
+                      }
                     });
                     x1 = 0;
                     y1 = 0;
@@ -619,12 +632,22 @@
                   dataType: "json",
                   data: {x1: scaled_x1, x2: x2, y1: scaled_y1, y2: y2, filename: filename},
                   success: function(result) {
+                    var playing_alarm_sound = false;
+                    if(result.max_type != "organic" && result.max_type != "") {
+                      play_warning_audio();
+                      playing_alarm_sound = true;
+                    }
+
                     $ias.cancelSelection();
                     swal.close();
                     window.swal({
                       icon: result.icon,
                       title: "Result",
                       text: result.status
+                    }).then(function() {
+                      if(playing_alarm_sound) {
+                        stop_warning_audio();
+                      }
                     });
                     x1 = 0;
                     y1 = 0;
@@ -636,27 +659,31 @@
             });
 
             $("#zoom").click(function() {
-              glass = magnify("img", 3);
+              if(zoomed == false) {
+                glass = magnify("img", 3);
 
-              $("#live").removeClass("selected-toggle");
-              $("#live").addClass("toggle-button");
+                $("#live").removeClass("selected-toggle");
+                $("#live").addClass("toggle-button");
 
-              $("#zoom").removeClass("toggle-button");
-              $("#zoom").addClass("selected-toggle");
+                $("#zoom").removeClass("toggle-button");
+                $("#zoom").addClass("selected-toggle");
 
-              zoomed = true;
+                zoomed = true;
+              }
             });
 
             $("#live").click(function() {
-              glass.removeAttribute("class");
+              if(zoomed == true) {
+                glass.removeAttribute("class");
 
-              $("#live").removeClass("toggle-button");
-              $("#live").addClass("selected-toggle");
+                $("#live").removeClass("toggle-button");
+                $("#live").addClass("selected-toggle");
 
-              $("#zoom").removeClass("selected-toggle");
-              $("#zoom").addClass("toggle-button");
+                $("#zoom").removeClass("selected-toggle");
+                $("#zoom").addClass("toggle-button");
 
-              zoomed = false;
+                zoomed = false;
+              }
             });
 
             $("#gamma").click(function() {
@@ -685,6 +712,22 @@
             });
 
             var angle = 0;
+
+            $("#left-rotate").click(function() {
+              angle -= 90;
+              if(angle == -360)
+                angle = 0;
+              console.log(angle);
+              $('#img').css('transform','rotate(' + angle + 'deg)');
+            });
+
+            $("#right-rotate").click(function() {
+              angle += 90;
+              if(angle == 360)
+                angle = 0;
+              console.log(angle);
+              $('#img').css('transform','rotate(' + angle + 'deg)');
+            });
         });
       </script>
     </body>
