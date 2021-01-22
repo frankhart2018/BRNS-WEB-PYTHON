@@ -23,15 +23,14 @@
               background: none;
             }
 
-            .mode-button:hover {
-              background: black;
-              color: white;
+            .button-image {
+              width: 100%; 
+              height: 100%;
             }
 
             .selected {
-              background: black;
               color: white;
-              border: 4px solid white;
+              border: 4px solid blue;
             }
 
             .icon-button {
@@ -257,13 +256,21 @@
           <form method="post" style="float: left; margin-left: 10%;">
             <div>
               <p>
-                <button type="button" id="pseudo-mode" class='mode-button'>Pseudo colored</button>
-                <button type="button" id="grayscale-mode" class='mode-button'>Grayscale</button>
+                <button type="button" id="pseudo-mode" class='mode-button'>
+                  <img src="{{img}}" class="button-image">
+                </button>
+                <button type="button" id="grayscale-mode" class='mode-button'>
+                  <img src="{{gmg}}" class="button-image">
+                </button>
               </p>
 
               <p>
-                <button type="button" id="om-mode" class='mode-button'>OM</button>
-                <button type="button" id="vcplus-mode" class='mode-button'>VC+</button>
+                <button type="button" id="om-mode" class='mode-button'>
+                  <img src="{{omg}}" class="button-image">
+                </button>
+                <button type="button" id="vcplus-mode" class='mode-button'>
+                  <img src="{{vmg}}" class="button-image">
+                </button>
               </p>
 
               <p>

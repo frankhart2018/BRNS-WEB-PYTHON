@@ -59,10 +59,30 @@ def index():
             filename_global = filename
             global brns_processing
             brns_processing = BRNSProcessing(filename_global)
-            img = brns_processing.pc_img
+            color_img = brns_processing.pc_img
 
             im_filename = "static/colorized/" + file.filename.split(".")[0] + ".png"
-            matplotlib.image.imsave(im_filename, img)
+            matplotlib.image.imsave(im_filename, color_img)
+
+            om_img = brns_processing.genOMImg()
+            om_filename = "static/om/" + os.path.basename(filename.split(".")[0]) + ".png"
+            plt.axis('off')
+            plt.imshow(om_img)
+            plt.savefig(om_filename, bbox_inches='tight', pad_inches=0)
+            plt.close()
+
+            img = cv2.imread(im_filename)
+            filename = os.path.basename(im_filename)
+            img_gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+            gray_filename = "static/grayscale/" + filename.split(".")[0] + ".png"
+            cv2.imwrite(gray_filename, img_gray)
+
+            vcplus_img = brns_processing.genVCplus()
+            vc_filename = "static/vcplus/" + os.path.basename(filename.split(".")[0]) + ".png"
+            plt.axis('off')
+            plt.imshow(vcplus_img)
+            plt.savefig(vc_filename, bbox_inches='tight', pad_inches=0)
+            plt.close()
 
             conn = get_connection()
             cursor = conn.execute("SELECT * FROM mode")
@@ -74,7 +94,9 @@ def index():
             global gamma
             gamma = 0.1
 
-            return render_template('index-new.html', upload=False, img=im_filename, mode=mode, updated_count=updated_count)
+            return render_template('index-new.html', upload=False, img=im_filename, omg=om_filename,
+                                   gmg=gray_filename, vmg=vc_filename,
+                                   mode=mode, updated_count=updated_count)
         else:
             flash("No image selected")
             return render_template('index-new.html', upload=True)
