@@ -167,8 +167,8 @@ def zeff():
 def constrast():
 
     if request.method == "POST":
-
-        filename = request.form['filename']
+        global filename_global
+        filename = "static/colorized/" + os.path.basename(filename_global).split(".")[0] + ".png"
 
         savePath = contrast(filename)
 
