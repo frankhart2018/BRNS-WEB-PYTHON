@@ -694,11 +694,17 @@
             });
 
             $("#gamma").click(function() {
+              window.swal({
+                title: "Computing gamma...",
+                text: "Please wait"
+              });
+              
               $.ajax({
                 url: "/gamma-update",
                 type: "post",
                 dataType: "json",
                 success: function(result) {
+                  window.swal.close();
                   $("#img").attr('src', result.img);
                 }
               });
