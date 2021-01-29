@@ -276,7 +276,7 @@
               <p>
                 <div class="box">
                   <strong>Scan number:</strong> {{updated_count}} <br><br>
-                  <strong>Scan mode:</strong> {{mode}} <br><br>
+                  <strong>Scan mode:</strong> <span id="scan-mode">{{mode}}</span> <br><br>
                   <strong>System status:</strong> <br><br>
                   <strong>Image Status:</strong> <br><br>
                 </div>
@@ -451,6 +451,7 @@
               var mode_name = $(this).attr("id");
 
               if(!$(this).hasClass("selected")) {
+                $("#scan-mode").html(mode_name);
                 mode_request(mode_name, show_please_wait=true, send_data=true);
               } else {
                 var id_to_name = {
