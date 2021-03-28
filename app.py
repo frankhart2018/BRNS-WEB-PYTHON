@@ -18,6 +18,8 @@ from brns_processing import BRNSProcessing
 from predict import predict_function
 from db import get_connection, update_mode, update_scan_count
 
+os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
+
 app = Flask(__name__)
 
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
