@@ -287,31 +287,31 @@
                 </button>
               </p>
 
-              <p>
+              <!-- <p>
                 <div class="box">
                   <strong>Scan number:</strong> {{updated_count}} <br><br>
                   <strong>Scan mode:</strong> <span id="scan-mode">{{mode}}</span> <br><br>
                   <strong>System status:</strong> <br><br>
                   <strong>Image Status:</strong> <br><br>
                 </div>
-              </p>
+              </p> -->
 
               <h3 style="color: white;">View Options</h3>
               <div class="box" style="margin-top: -15px;">
+                <div>
+                  <div id="options-box">
+                    <button type="button" id="bw-option" class='option-button'>BW</button>
+                    <button type="button" id="obj-option" class='option-button'>OBJ</button>
+                    <button type="button" id="cc-option" class='option-button'>CC</button>
+                    <button type="button" id="inv-option" class='option-button'>Inv</button>
+                  </div>
+                </div>
                 <div>
                   <div id="options-box">
                     <button type="button" id="pseudo-option" class='option-button'>Color</button>
                     <button type="button" id="om-option" class='option-button'>OM</button>
                     <button type="button" id="im-option" class='option-button'>IM</button>
                     <button type="button" id="vcminus-option" class='option-button'>VC-</button>
-                  </div>
-                </div>
-                <div>
-                  <div id="options-box">
-                    <button type="button" id="cc-option" class='option-button'>CC</button>
-                    <button type="button" id="obj-option" class='option-button'>OBJ</button>
-                    <button type="button" id="bw-option" class='option-button'>Gray</button>
-                    <button type="button" id="inv-option" class='option-button'>Inv</button>
                   </div>
                 </div>
               </div>
@@ -349,7 +349,7 @@
           </form>
         </div>
 
-        <div style="float: left; margin-top: -280px; margin-left: 10%;">
+        <div style="float: left; margin-top: -200px; margin-left: 10%;">
           <p>
             <div id="toggle">
               <button type="button" id="zoom" class='toggle-button'>Zoom</button>
