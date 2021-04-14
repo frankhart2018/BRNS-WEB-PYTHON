@@ -376,7 +376,7 @@ def gamma():
         filename = "static/colorized/" + os.path.basename(filename_global).split(".")[0] + ".png"
         gamma = request.form['gamma']
         savePath = gamma_correction(gamma, filename)
-        return jsonify({"img": savePath, "gamma": gamma})
+        return jsonify({"img": savePath, "gamma": gamma[:3]})
 
 @app.route('/gamma-update', methods=['GET', 'POST'])
 def gamma_update():

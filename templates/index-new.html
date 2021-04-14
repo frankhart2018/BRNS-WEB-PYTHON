@@ -50,7 +50,7 @@
             }
 
             .box {
-              width: 80%;
+              width: 90%;
               padding: 20px;
               border: 4px solid #C0C0C0;
               border-radius: 10px;
@@ -60,19 +60,7 @@
             }
 
             .option-button {
-              border: 4px solid #C0C0C0;
-              color: white;
-              border-radius: 10px;
-              width: 60px;
-              font-size: 90%;
-              font-weight: bold;
-              background: none;
-              margin-left: 2px;
-              margin-right: 2px;
-              word-wrap: break-word;
-              margin-bottom: 10px;
-              width: 70px;
-              height: 40px;
+              margin: 5px;
             }
 
             .option-button:hover {
@@ -191,6 +179,15 @@
               background: black;
             }
 
+            .img-btn {
+              width: 50px;
+              height: 50px;
+            }
+
+            #slider1-value {
+              text-align: center;
+            }
+
         </style>
 
         <script>
@@ -300,63 +297,58 @@
               <div class="box" style="margin-top: -15px;">
                 <div>
                   <div id="options-box">
-                    <button type="button" id="bw-option" class='option-button'>BW</button>
-                    <button type="button" id="obj-option" class='option-button'>OBJ</button>
-                    <button type="button" id="cc-option" class='option-button'>CC</button>
-                    <button type="button" id="inv-option" class='option-button'>Inv</button>
+                    <button type="button" class="option-button" id="bw-option"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/BW.png') }}"></button>
+                    <button type="button" class="option-button" id="obj-option"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/obj_vs_bg.png') }}"></button>
+                    <button type="button" class="option-button" id="cc-option"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/CC.png') }}"></button>
+                    <button type="button" class="option-button" id="inv-option"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/INV.png') }}"></button>
                   </div>
                 </div>
                 <div>
                   <div id="options-box">
-                    <button type="button" id="pseudo-option" class='option-button'>Color</button>
-                    <button type="button" id="om-option" class='option-button'>OM</button>
-                    <button type="button" id="im-option" class='option-button'>IM</button>
-                    <button type="button" id="vcminus-option" class='option-button'>VC-</button>
+                    <button type="button" class="option-button" id="im-option"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/IM.png') }}"></button>
+                    <button type="button" class="option-button" id="vcminus-option"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/VC_minus.png') }}"></button>
+                    <button type="button" class="option-button" id="hsi-option"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/HSI.png') }}"></button>
+                    <button type="button" class="option-button" id="cs-option"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/cstretch.png') }}"></button>
+                  </div>
+                </div>
+                <div>
+                  <div id="options-box">
+                    <button type="button" class="option-button" id="veminus-option"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/VE_minus.png') }}"></button>
+                    <span id="slider1-value">VE Value = 2.0</span>
+                    <button type="button" class="option-button" id="veplus-option" style='margin-left: 100px;'><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/VE_plus.png') }}"></button>
+                  </div>
+                </div>
+                <div>
+                  <div id="options-box">
+                    <button type="button" class="option-button" id="gammaminus-option"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/gamma_minus.png') }}"></button>
+                    <span id="slider2-value">Gamma Value = 2.0</span>
+                    <button type="button" class="option-button" id="gammaplus-option" style='margin-left: 100px;'><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/gamma_plus.png') }}"></button>
                   </div>
                 </div>
               </div>
 
-              <h3 style="color: white;">Operation</h3>
+              <h3 style="color: white;">Operations</h3>
               <div class="box" style="margin-top: -15px;">
                 <div>
                   <div id="options-box">
-                    <button type="button" id="#" class='operation-button'>Send</button>
-                    <button type="button" id="#" class='operation-button'>Francais</button>
-                  </div>
-                </div>
-                <div>
-                  <div id="options-box">
-                    <button type="button" id="cosine-operation" class='operation-button'>Cosine</button>
-                    <button type="button" id="nn-operation" class='operation-button'>NN</button>
+                    <button type="button" class="option-button" id="zoom" style="width: 70px; height: 60px; background-color: #4f81bd; color: white;">Zoom</button>
+                    <button type="button" class="option-button" id="nn-operation"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/nn.png') }}"></button>
+                    <button type="button" class="option-button" id="#" style="width: 70px; height: 60px; background-color: #4f81bd; color: white;">Manual Search</button>
                   </div>
                 </div>
               </div>
-
-              <div class="box" style="margin-top: 10px;">
-                  <div id="options-box">
-                    <button type="button" id="jaccard-operation" class='operation-button'>Jaccard</button>
-                    <button type="button" id="zeff-operation" class='operation-button'>Zeff</button>
-                  </div>
-                </div>
-              </div>
-
-              <p style="text-align: center;">
-                <button type="button" id="grayscale-mode" class='icon-button'><img class='icon-image' src="static/ecil_icons/previous.png"></button>
-                <button type="button" id="pseudo-mode" class='icon-button'><img class='icon-image' src="static/ecil_icons/stop.png"></button>
-                <button type="button" id="grayscale-mode" class='icon-button'><img class='icon-image' src="static/ecil_icons/next.png"></button>
-              </p>
             </div>
           </form>
         </div>
 
-        <div style="float: left; margin-top: -200px; margin-left: 10%;">
+        <div style="float: left; margin-top: -100px;">
           <p>
-            <div id="toggle">
-              <button type="button" id="zoom" class='toggle-button'>Zoom</button>
-              <button type="button" id="live" class='toggle-button'>Live</button>
-            </div>
-            <button type="button" id="gamma" class='bottom-button'>Gamma</button>
-            <button type="button" id="contrast" class='bottom-button'>Contrast</button>
+            <button type="button" id="#" class='bottom-button'>Start</button>
+            <button type="button" id="#" class='bottom-button'>Stop</button>
+            <button type="button" id="new" class='bottom-button'>New Image</button>
+            <button type="button" id="#" class='bottom-button'>Calibration</button>
+            <button type="button" id="#" class='bottom-button'>Left</button>
+            <button type="button" id="#" class='bottom-button'>Right</button>
             <button type="button" id="left-rotate" class='bottom-button'>Left Rotate</button>
             <button type="button" id="right-rotate" class='bottom-button'>Right Rotate</button>
           </p>
@@ -377,14 +369,14 @@
                 "vcplus-mode": "/vcplus",
 
                 // Options
-                "pseudo-option": "/rgb",
-                "om-option": "/om",
+                "bw-option": "/gray",
+                "obj-option": "/obj",
+                "cc-option": "/cc",
+                "inv-option": "/inv",
                 "im-option": "/im",
                 "vcminus-option": "/vcminus",
-                "cc-option": "/cc",
-                "obj-option": "/obj",
-                "bw-option": "/gray",
-                "inv-option": "/inv",
+                "hsi-option": "/hsi",
+                "cs-option": "/constrast",
               }
 
               if(show_please_wait) {
@@ -393,6 +385,9 @@
                   text: "Please wait"
                 });
               }
+
+              $("#slider1-value").css("opacity", "0");
+              $("#slider2-value").css("opacity", "0");
 
               var data = {}
               if(send_data)
@@ -454,9 +449,6 @@
 
             var zoomed = false;
 
-            $("#live").removeClass("toggle-button");
-            $("#live").addClass("selected-toggle");
-
             glass = magnify("img", 3);
             glass.removeAttribute("class");
 
@@ -490,7 +482,9 @@
 
             $(".option-button").click(function() {
               var option_name = $(this).attr("id");
-              mode_request(option_name, show_please_wait=true);
+
+              if(option_name != "zoom")
+                mode_request(option_name, show_please_wait=true);
             });
 
             $("#zeff-operation").click(function() {
@@ -686,27 +680,9 @@
               if(zoomed == false) {
                 glass = magnify("img", 3);
 
-                $("#live").removeClass("selected-toggle");
-                $("#live").addClass("toggle-button");
-
-                $("#zoom").removeClass("toggle-button");
-                $("#zoom").addClass("selected-toggle");
-
                 zoomed = true;
-              }
-            });
-
-            $("#live").click(function() {
-              if(zoomed == true) {
+              } else {
                 glass.removeAttribute("class");
-
-                $("#live").removeClass("toggle-button");
-                $("#live").addClass("selected-toggle");
-
-                $("#zoom").removeClass("selected-toggle");
-                $("#zoom").addClass("toggle-button");
-
-                zoomed = false;
               }
             });
 
@@ -757,6 +733,110 @@
                 angle = 0;
               console.log(angle);
               $('#img').css('transform','rotate(' + angle + 'deg)');
+            });
+
+            var slider = 0;
+            $("#slider1-value").css("opacity", "0");
+
+            $("#veplus-option").click(function() {
+              if(slider + 0.1 <= 2.1) {
+                slider = slider + 0.1;
+                window.swal({
+                  title: "Processing...",
+                  text: "Please wait"
+                });
+                $.ajax({
+                  url: "/ve",
+                  type: "post",
+                  dataType: "json",
+                  data: {ve: slider},
+                  success: function(result) {
+                    window.swal.close();
+                    $("#slider1-value").css("opacity", "100");
+                    $("#img").attr('src', result.img + '?' + new Date().getTime());
+                    $("#slider1-value").html("VE value = " + result.ve);
+                  }
+                });
+              }
+            });
+
+            $("#veminus-option").click(function() {
+              if(slider - 0.1 >= -0.1) {
+                slider = slider - 0.1;
+                window.swal({
+                  title: "Processing...",
+                  text: "Please wait"
+                });
+                $.ajax({
+                  url: "/ve",
+                  type: "post",
+                  dataType: "json",
+                  data: {ve: slider},
+                  success: function(result) {
+                    window.swal.close();
+                    $("#slider1-value").css("opacity", "100");
+                    $("#img").attr('src', result.img + '?' + new Date().getTime());
+                    $("#slider1-value").html("VE value = " + result.ve);
+                  }
+                });
+              }
+            });
+
+            var slider2 = 0;
+            $("#slider2-value").css("opacity", "0");
+
+            $("#gammaplus-option").click(function() {
+              if(slider2 + 0.1 <= 2.1) {
+                slider2 = slider2 + 0.1;
+                window.swal({
+                  title: "Processing...",
+                  text: "Please wait"
+                });
+                $.ajax({
+                  url: "/gamma",
+                  type: "post",
+                  dataType: "json",
+                  data: {gamma: slider2, mode: "1"},
+                  success: function(result) {
+                    window.swal.close();
+                    $("#slider2-value").css("opacity", "100");
+                    $("#img").attr('src', result.img + '?' + new Date().getTime());
+                    $("#slider2-value").html("Gamma value = " + result.gamma);
+                  }
+                });
+              }
+            });
+
+            $("#gammaminus-option").click(function() {
+              if(slider2 - 0.1 >= -0.1) {
+                slider2 = slider2 - 0.1;
+                window.swal({
+                  title: "Processing...",
+                  text: "Please wait"
+                });
+                $.ajax({
+                  url: "/gamma",
+                  type: "post",
+                  dataType: "json",
+                  data: {gamma: slider2, mode: "1"},
+                  success: function(result) {
+                    window.swal.close();
+                    $("#slider2-value").css("opacity", "100");
+                    $("#img").attr('src', result.img + '?' + new Date().getTime());
+                    $("#slider2-value").html("Gamma value = " + result.gamma);
+                  }
+                });
+              }
+            });
+
+            $("#new").click(function() {
+              $.ajax({
+                url: "/",
+                type: "get",
+                success: function() {
+                  window.location.href = '/';
+                }
+              })
             });
         });
       </script>
