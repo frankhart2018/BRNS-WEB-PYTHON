@@ -4,7 +4,7 @@ import urllib.request
 import progressbar
 
 files = ["cc", "colorized", "contrast", "gamma_corrected", "grayscale", "hsi", "im", "inv", "obj", "om",
-         "original", "resize", "vcminus", "vcplus", "vd", "ve", "jaccard", "model", "nn", "cosine"]
+         "original", "resize", "vcminus", "vcplus", "vd", "ve", "jaccard", "model", "nn", "cosine", "noobj"]
 
 print()
 print("Step 1) Creating intermediary files.")
@@ -64,6 +64,16 @@ conn.execute("""
 """)
 
 conn.execute("INSERT INTO count(id, cnt) VALUES(1, 0)")
+conn.commit()
+
+conn.execute("""
+    CREATE TABLE noobj(
+        id INT PRIMARY KEY,
+        file_path TEXT NOT NULL
+    )
+""")
+
+conn.execute("INSERT INTO noobj(id, file_path) VALUES(1, 'images/NOOBJECT_20-08-2018.txt')")
 conn.commit()
 
 conn.close()

@@ -16,7 +16,7 @@ from contrast import contrast
 from gamma import gamma_correction
 from brns_processing import BRNSProcessing
 from predict import predict_function
-from db import get_connection, update_mode, update_scan_count
+from db import get_connection, update_mode, update_scan_count, get_current_noobj_file_path, update_current_noobj_file_path
 
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 
@@ -60,7 +60,20 @@ def index():
             global filename_global
             filename_global = filename
             global brns_processing
-            brns_processing = BRNSProcessing(filename_global)
+
+            noObjFile = get_current_noobj_file_path()
+            if "inputNoObjFile" in request.files:
+                no_object_file = request.files['inputNoObjFile']
+
+                if len(no_object_file.filename) > 0:
+                    no_object_file_path = secure_filename(no_object_file.filename)
+                    no_object_file_path = "static/noobj/" + no_object_file_path
+                    no_object_file.save(no_object_file_path)
+
+                    noObjFile = no_object_file_path
+                    update_current_noobj_file_path(file_path=noObjFile)
+
+            brns_processing = BRNSProcessing(filename_global, noobj_path=noObjFile)
             color_img = brns_processing.pc_img
 
             im_filename = "static/colorized/" + file.filename.split(".")[0] + ".png"

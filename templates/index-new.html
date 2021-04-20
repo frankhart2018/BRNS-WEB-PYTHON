@@ -247,7 +247,14 @@
     <body>
       {% if upload %}
         <form method="post" enctype="multipart/form-data">
-          <input type="file" name="inputFile">
+          <p style="color: white;">
+            <strong>Input File: </strong>
+            <input type="file" name="inputFile">
+          </p>
+          <p style="color: white;">
+            <strong>NoObj File (Optional): </strong>
+            <input type="file" name="inputNoObjFile">
+          </p>
           <input type="submit" name="inputSubmit">
         </form>
       {% else %}
@@ -340,7 +347,6 @@
             <button type="button" class="bottom-button" id="#"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/start.jpg') }}"></button>
             <button type="button" class="bottom-button" id="#"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/stop.jpg') }}"></button>
             <button type="button" class="bottom-button" id="new"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/new-image.jpg') }}"></button>
-            <button type="button" class="bottom-button" id="#"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/calibration.jpg') }}"></button>
             <button type="button" class="bottom-button" id="#"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/forward.jpg') }}"></button>
             <button type="button" class="bottom-button" id="#"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/reverse.jpg') }}"></button>
             <button type="button" class="bottom-button" id="left-rotate"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/left-rotate.jpg') }}"></button>

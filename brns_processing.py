@@ -32,8 +32,9 @@ def getAllFilesInFolder(folderpath):
 
 class BRNSProcessing:
     clut=loadmat('images/eclut.mat')['CLUT']
-    noobj=loadimgfile('images/NOOBJECT_20-08-2018.txt')
-    def __init__(self,imgfpath):
+    def __init__(self,imgfpath, noobj_path):
+        self.noobj=loadimgfile(noobj_path)
+
         self.loadLH(imgfpath)
         self.generateFusion()
         self.generateChc()
@@ -45,12 +46,15 @@ class BRNSProcessing:
 
     def loadLH(self,imgfpath):
         img=loadimgfile(imgfpath)
-        M=BRNSProcessing.noobj[:512,:640]
-        N=BRNSProcessing.noobj[:512,640:1280]
+        M=self.noobj[:512,:640]
+        N=self.noobj[:512,640:1280]
         A=img[:512,:640]
         B=img[:512,640:1280]
         self.L=A/M
         self.H=B/N
+
+    def update_noobj(self, noobj_path):
+        self.noobj = loadimgfile(noobj_path)
 
     def generateFusion(self):
         self.LE=self.L**3.2
