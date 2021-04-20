@@ -1,14 +1,17 @@
 import sqlite3
 
+
 def get_connection():
     conn = sqlite3.connect("brns-db")
     return conn
+
 
 def update_mode(mode):
     conn = get_connection()
     conn.execute(f"UPDATE mode SET current_mode='{mode}' WHERE id=1")
     conn.commit()
     conn.close()
+
 
 def update_scan_count():
     conn = get_connection()
@@ -20,6 +23,7 @@ def update_scan_count():
 
     return current_count + 1
 
+
 def get_current_noobj_file_path():
     conn = get_connection()
     cursor = conn.execute("SELECT * FROM noobj WHERE id=1")
@@ -27,6 +31,7 @@ def get_current_noobj_file_path():
     conn.close()
 
     return current_noobj_file_path
+
 
 def update_current_noobj_file_path(file_path):
     conn = get_connection()

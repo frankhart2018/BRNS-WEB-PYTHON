@@ -3,8 +3,29 @@ import sqlite3
 import urllib.request
 import progressbar
 
-files = ["cc", "colorized", "contrast", "gamma_corrected", "grayscale", "hsi", "im", "inv", "obj", "om",
-         "original", "resize", "vcminus", "vcplus", "vd", "ve", "jaccard", "model", "nn", "cosine", "noobj"]
+files = [
+    "cc",
+    "colorized",
+    "contrast",
+    "gamma_corrected",
+    "grayscale",
+    "hsi",
+    "im",
+    "inv",
+    "obj",
+    "om",
+    "original",
+    "resize",
+    "vcminus",
+    "vcplus",
+    "vd",
+    "ve",
+    "jaccard",
+    "model",
+    "nn",
+    "cosine",
+    "noobj",
+]
 
 print()
 print("Step 1) Creating intermediary files.")
@@ -16,6 +37,7 @@ for file in files:
 print("Step 1 completed.")
 
 pbar = None
+
 
 def show_progress(block_num, block_size, total_size):
     global pbar
@@ -30,10 +52,15 @@ def show_progress(block_num, block_size, total_size):
         pbar.finish()
         pbar = None
 
+
 print()
 print("Step 2) Downloading neural network trained model.")
 url = "http://jncpasighat.edu.in/file/vanilla-cnn-colored.pth"
-urllib.request.urlretrieve(url, os.path.join(os.getcwd(), 'static/model/vanilla-cnn-colored.pth'), show_progress)
+urllib.request.urlretrieve(
+    url,
+    os.path.join(os.getcwd(), "static/model/vanilla-cnn-colored.pth"),
+    show_progress,
+)
 
 print("Step 2 completed.")
 
@@ -46,34 +73,42 @@ if os.path.exists(db_path):
 
 conn = sqlite3.connect(db_path)
 
-conn.execute("""
+conn.execute(
+    """
     CREATE TABLE mode(
         id INT PRIMARY KEY,
         current_mode TEXT NOT NULL
     )
-""")
+"""
+)
 
 conn.execute("INSERT INTO mode(id, current_mode) VALUES(1, 'pseudo-mode')")
 conn.commit()
 
-conn.execute("""
+conn.execute(
+    """
     CREATE TABLE count(
         id INT PRIMARY KEY,
         cnt INT NOT NULL
     )
-""")
+"""
+)
 
 conn.execute("INSERT INTO count(id, cnt) VALUES(1, 0)")
 conn.commit()
 
-conn.execute("""
+conn.execute(
+    """
     CREATE TABLE noobj(
         id INT PRIMARY KEY,
         file_path TEXT NOT NULL
     )
-""")
+"""
+)
 
-conn.execute("INSERT INTO noobj(id, file_path) VALUES(1, 'images/NOOBJECT_20-08-2018.txt')")
+conn.execute(
+    "INSERT INTO noobj(id, file_path) VALUES(1, 'images/NOOBJECT_20-08-2018.txt')"
+)
 conn.commit()
 
 conn.close()
