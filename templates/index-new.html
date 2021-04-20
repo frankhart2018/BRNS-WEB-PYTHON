@@ -105,17 +105,7 @@
             }
 
             .bottom-button {
-              width: 100px;
-              height: 50px;
-              word-wrap: break-word;
-              border: 4px solid #C0C0C0;
-              color: white;
-              border-radius: 10px;
-              background: none;
-              font-weight: bold;
-              font-size: 100%;
-              float: left;
-              margin-right: 5px;
+              margin: 5px;
             }
 
             .bottom-button:hover {
@@ -335,9 +325,9 @@
               <div class="box" style="margin-top: -15px;">
                 <div>
                   <div id="options-box">
-                    <button type="button" class="option-button" id="zoom" style="width: 70px; height: 60px; background-color: #4f81bd; color: white;">Zoom</button>
+                    <button type="button" class="option-button" id="zoom"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/zoom.jpg') }}"></button>
                     <button type="button" class="option-button" id="nn-operation"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/nn.png') }}"></button>
-                    <button type="button" class="option-button" id="#" style="width: 70px; height: 60px; background-color: #4f81bd; color: white;">Manual Search</button>
+                    <button type="button" class="option-button" id="#"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/manual-search.jpg') }}"></button>
                   </div>
                 </div>
               </div>
@@ -347,14 +337,14 @@
 
         <div style="float: left; margin-top: -100px;">
           <p>
-            <button type="button" id="#" class='bottom-button'>Start</button>
-            <button type="button" id="#" class='bottom-button'>Stop</button>
-            <button type="button" id="new" class='bottom-button'>New Image</button>
-            <button type="button" id="#" class='bottom-button'>Calibration</button>
-            <button type="button" id="#" class='bottom-button'>Left</button>
-            <button type="button" id="#" class='bottom-button'>Right</button>
-            <button type="button" id="left-rotate" class='bottom-button'>Left Rotate</button>
-            <button type="button" id="right-rotate" class='bottom-button'>Right Rotate</button>
+            <button type="button" class="bottom-button" id="#"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/start.jpg') }}"></button>
+            <button type="button" class="bottom-button" id="#"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/stop.jpg') }}"></button>
+            <button type="button" class="bottom-button" id="new"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/new-image.jpg') }}"></button>
+            <button type="button" class="bottom-button" id="#"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/calibration.jpg') }}"></button>
+            <button type="button" class="bottom-button" id="#"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/forward.jpg') }}"></button>
+            <button type="button" class="bottom-button" id="#"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/reverse.jpg') }}"></button>
+            <button type="button" class="bottom-button" id="left-rotate"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/left-rotate.jpg') }}"></button>
+            <button type="button" class="bottom-button" id="right-rotate"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/right-rotate.jpg') }}"></button>
           </p>
         </div>
       {% endif %}
