@@ -256,7 +256,9 @@ def rgb():
         global filename_global
         global brns_processing
 
-        brns_processing = BRNSProcessing(filename_global)
+        noobj_path = get_current_noobj_file_path()
+
+        brns_processing = BRNSProcessing(filename_global, noobj_path=noobj_path)
         img = brns_processing.pc_img
 
         im_filename = (

@@ -332,16 +332,42 @@
           </form>
         </div>
 
-        <div style="float: left; margin-top: -100px;">
-          <p>
-            <button type="button" class="bottom-button" id="#"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/start.jpg') }}"></button>
-            <button type="button" class="bottom-button" id="#"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/stop.jpg') }}"></button>
-            <button type="button" class="bottom-button" id="new"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/new-image.jpg') }}"></button>
-            <button type="button" class="bottom-button" id="#"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/forward.jpg') }}"></button>
-            <button type="button" class="bottom-button" id="#"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/reverse.jpg') }}"></button>
-            <button type="button" class="bottom-button" id="left-rotate"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/left-rotate.jpg') }}"></button>
-            <button type="button" class="bottom-button" id="right-rotate"><img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/right-rotate.jpg') }}"></button>
-          </p>
+        <div class="box" style="float: left; margin-top: -50px; width: 59%; display: table; table-layout: fixed;">
+            <span style="display: table-cell; text-align: center;">
+              <button type="button" class="bottom-button" id="#">
+                <img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/start.jpg') }}">
+              </button>
+            </span>
+            <span style="display: table-cell; text-align: center;">
+              <button type="button" class="bottom-button" id="#">
+                <img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/stop.jpg') }}">
+              </button>
+            </span>
+            <span style="display: table-cell; text-align: center;">
+              <button type="button" class="bottom-button" id="new">
+                <img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/new-image.jpg') }}">
+              </button>
+            </span>
+            <span style="display: table-cell; text-align: center;">
+              <button type="button" class="bottom-button" id="#">
+                <img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/forward.jpg') }}">
+              </button>
+            </span>
+            <span style="display: table-cell; text-align: center;">
+              <button type="button" class="bottom-button" id="#">
+                <img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/reverse.jpg') }}">
+              </button>
+            </span>
+            <span style="display: table-cell; text-align: center;">
+              <button type="button" class="bottom-button" id="left-rotate">
+                <img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/left-rotate.jpg') }}">
+              </button>
+            </span>
+            <span style="display: table-cell; text-align: center;">
+              <button type="button" class="bottom-button" id="right-rotate">
+                <img class="img-btn" src="{{ url_for('static', filename='new_ecil_icons/right-rotate.jpg') }}">
+              </button>
+            </span>
         </div>
       {% endif %}
 
