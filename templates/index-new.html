@@ -733,11 +733,12 @@
                     x2 = 0;
                     y1 = 0;
                     y2 = 0;
-                  }
+                  },
+                  async: false,
                 });
 
                 $.ajax({
-                  url: "/jaccard",
+                  url: "/cosine",
                   type: "post",
                   dataType: "json",
                   data: {x1: scaled_x1, x2: x2, y1: scaled_y1, y2: y2, filename: filename},
