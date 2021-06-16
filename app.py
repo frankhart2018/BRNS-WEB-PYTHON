@@ -62,7 +62,7 @@ gamma = 0.1
 
 
 @app.route("/", methods=["GET", "POST"])
-@timeit
+
 def index():
 
     if "inputSubmit" in request.form:
@@ -149,7 +149,7 @@ def index():
 
 
 @app.route("/old", methods=["GET", "POST"])
-@timeit
+
 def index_old():
 
     if "inputSubmit" in request.form:
@@ -179,7 +179,6 @@ def index_old():
 
 
 @app.route("/zeff", methods=["GET", "POST"])
-@timeit
 def zeff():
 
     if request.method == "POST":
@@ -215,7 +214,7 @@ def zeff():
 
 
 @app.route("/constrast", methods=["GET", "POST"])
-@timeit
+
 def constrast():
 
     if request.method == "POST":
@@ -232,7 +231,7 @@ def constrast():
 
 
 @app.route("/rgbtohsi", methods=["GET", "POST"])
-@timeit
+
 def rgbtohsi():
 
     if request.method == "POST":
@@ -249,7 +248,7 @@ def rgbtohsi():
         return jsonify({"img": savePath})
 
 @app.route("/rgb", methods=["GET", "POST"])
-@timeit
+
 def rgb():
 
     if request.method == "POST":
@@ -277,7 +276,7 @@ def rgb():
 
 
 @app.route("/gray", methods=["GET", "POST"])
-@timeit
+
 def gray():
 
     if request.method == "POST":
@@ -299,7 +298,7 @@ def gray():
 
 
 @app.route("/hsi", methods=["GET", "POST"])
-@timeit
+
 def hsi():
 
     if request.method == "POST":
@@ -316,7 +315,7 @@ def hsi():
 
 
 @app.route("/cc", methods=["GET", "POST"])
-@timeit
+
 def cc():
 
     if request.method == "POST":
@@ -339,7 +338,7 @@ def cc():
 
 
 @app.route("/inv", methods=["GET", "POST"])
-@timeit
+
 def inv():
 
     if request.method == "POST":
@@ -356,7 +355,7 @@ def inv():
 
 
 @app.route("/obj", methods=["GET", "POST"])
-@timeit
+
 def obj():
 
     if request.method == "POST":
@@ -373,7 +372,7 @@ def obj():
 
 
 @app.route("/om", methods=["GET", "POST"])
-@timeit
+
 def om():
 
     if request.method == "POST":
@@ -396,7 +395,7 @@ def om():
 
 
 @app.route("/im", methods=["GET", "POST"])
-@timeit
+
 def im():
 
     if request.method == "POST":
@@ -413,7 +412,7 @@ def im():
 
 
 @app.route("/vcminus", methods=["GET", "POST"])
-@timeit
+
 def vcminus():
 
     if request.method == "POST":
@@ -432,7 +431,7 @@ def vcminus():
 
 
 @app.route("/vcplus", methods=["GET", "POST"])
-@timeit
+
 def vcplus():
 
     if request.method == "POST":
@@ -457,7 +456,7 @@ def vcplus():
 
 
 @app.route("/gamma", methods=["GET", "POST"])
-@timeit
+
 def gamma():
 
     if request.method == "POST":
@@ -473,7 +472,7 @@ def gamma():
 
 
 @app.route("/gamma-update", methods=["GET", "POST"])
-@timeit
+
 def gamma_update():
 
     if request.method == "POST":
@@ -490,7 +489,7 @@ def gamma_update():
 
 
 @app.route("/ve", methods=["GET", "POST"])
-@timeit
+
 def ve():
 
     if request.method == "POST":
@@ -510,7 +509,7 @@ def ve():
 
 
 @app.route("/vd", methods=["GET", "POST"])
-@timeit
+
 def vd():
 
     if request.method == "POST":
@@ -529,7 +528,7 @@ def vd():
 
 
 @app.route("/predict", methods=["POST"])
-@timeit
+
 def predict():
 
     if request.method == "POST":
@@ -564,7 +563,7 @@ def predict():
 
 
 @app.route("/jaccard", methods=["POST"])
-@timeit
+
 def jaccard_index():
 
     if request.method == "POST":
@@ -608,7 +607,7 @@ def jaccard_index():
 
 
 @app.route("/cosine", methods=["POST"])
-@timeit
+
 def cosine_similarity():
 
     if request.method == "POST":
@@ -652,7 +651,7 @@ def cosine_similarity():
 
 
 @app.route("/download")
-@timeit
+
 def download():
 
     return send_from_directory("static", "model/vanilla-cnn-colored.pth")
